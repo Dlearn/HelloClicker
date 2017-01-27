@@ -41,7 +41,7 @@ public class GpsSystem : MonoBehaviour {
         //locs.Add(new Vector2(1.3080f, 103.7725f), "Cendana Courtyard");
         locs.Add(new Vector2(1.3081f, 103.7723f), "Cendana Dining Hall");
         locs.Add(new Vector2(1.3082f, 103.7723f), "Cendana Dining Hall");
-        //locs.Add(new Vector2(1.3085f, 103.7715f), "Dylan's Room");
+        locs.Add(new Vector2(1.3085f, 103.7715f), "Dylan's Room");
         locs.Add(new Vector2(1.3078f, 103.7723f), "Dylan's Room");
 
         locs.Add(new Vector2(1.3076f, 103.7725f), "MPH1");
