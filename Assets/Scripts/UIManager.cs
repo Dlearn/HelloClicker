@@ -6,12 +6,12 @@ public class UIManager : MonoBehaviour {
 
     // GameObjects
     public static GameObject myManager;
-    public Player player;
+    private Player player;
     public GameObject RedKnight;
     public UnityEngine.UI.Text goldDisplay;
-    public UnityEngine.UI.Text EnemyHealthText;
     public Image damageImage;
     public Slider enemyHealth;
+    public UnityEngine.UI.Text EnemyHealthText;
 
     // Enemy Spawning
     //private Vector3 _spawnPoint = new Vector3(20f, 60f);
@@ -31,9 +31,9 @@ public class UIManager : MonoBehaviour {
         goldDisplay.text = "Gold: " + player.currentGold;
     }
 
-    public void SpawnEnemyIn1Second()
+    public void SpawnEnemyInXSeconds(float x)
     {
-        Invoke("SpawnEnemy", 1.0f);
+        Invoke("SpawnEnemy", x);
     }
 
     private void SpawnEnemy()
@@ -41,8 +41,7 @@ public class UIManager : MonoBehaviour {
         GameObject newRedKnight = (GameObject) Instantiate(RedKnight, transform);
         newRedKnight.GetComponent<Enemy>().UiManager = this;
         newRedKnight.GetComponent<Enemy>().player = player;
-        newRedKnight.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
-        newRedKnight.GetComponent<Enemy>().damageImage = damageImage;
         newRedKnight.GetComponent<Enemy>().enemyHealth = enemyHealth;
+        newRedKnight.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
     }
 }

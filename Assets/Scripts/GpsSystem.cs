@@ -38,9 +38,13 @@ public class GpsSystem : MonoBehaviour {
 
         // Fake GPS to real location
         locs = new Dictionary<Vector2, string>();
-        //locs.Add(new Vector2(1.3080f, 103.7725f), "Cendana Courtyard");
+        locs.Add(new Vector2(1.3077f, 103.7724f), "Cendana Staff Area");
+        locs.Add(new Vector2(1.3082f, 103.7726f), "MCS Classroom1");
+        locs.Add(new Vector2(1.3080f, 103.7725f), "MCS Classroom2");
         locs.Add(new Vector2(1.3081f, 103.7723f), "Cendana Dining Hall");
         locs.Add(new Vector2(1.3082f, 103.7723f), "Cendana Dining Hall");
+        locs.Add(new Vector2(1.3081f, 103.7725f), "Cendana Dining Hall");
+        locs.Add(new Vector2(1.3082f, 103.7725f), "Cendana Dining Hall");
         locs.Add(new Vector2(1.3085f, 103.7715f), "Dylan's Room");
         locs.Add(new Vector2(1.3078f, 103.7723f), "Dylan's Room");
 
@@ -112,7 +116,7 @@ public class GpsSystem : MonoBehaviour {
                 } else
                 {
                     // We start the timer to check each tick (every 4 sec) the current gps position
-                    InvokeRepeating("RetrieveGPSData", 0, 4);
+                    InvokeRepeating("RetrieveGPSData", 0, 6);
                 }
             } else
             {
@@ -150,14 +154,15 @@ public class GpsSystem : MonoBehaviour {
                 x = (longitude - MIN_LONG) * SCALE_X - 3f;
                 y = (latitude - MIN_LAT) * SCALE_Y - 5f;
                 this.transform.position = new Vector3(x, y, 0);
+                print(gpsString1);
             } else {
                 if (x < MIN_X || x > MAX_X || y < MIN_Y || y > MAX_Y)
                 {
                     textBox2.text = "Out of bounds.";
                 } //else Not Found
                 this.transform.position = new Vector3(x, y, 0);
+                print("O: "+gpsString1);
             }
-            print(gpsString1);
         }
         Input.location.Stop();
     }
@@ -170,12 +175,18 @@ public class GpsSystem : MonoBehaviour {
     string where(Vector2 input)
     {
         float epsilon = 0.0002f;
+        KeyValuePair<Vector2, string> closest = new KeyValuePair<Vector2, string> (new Vector2(103.770f,1.307f), "Not found");
         foreach (KeyValuePair<Vector2, string> pair in locs)
         {
             Vector2 coord = pair.Key;
             string location = pair.Value;
-            if (Vector2.Distance(input, coord) <= epsilon) return location;
+            //if (Vector2.Distance(input, coord) <= epsilon) return location;
+            if (Vector2.Distance(input, coord) <= epsilon && Vector2.Distance(input, coord) < Vector2.Distance(closest.Key, coord))
+            {
+                closest = new KeyValuePair<Vector2, string>(coord, location);
+            }
         }
-        return "Not found";
+        //return "Not found";
+        return closest.Value;
     }
 }

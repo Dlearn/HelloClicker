@@ -15,7 +15,7 @@ public class upgradeManager : MonoBehaviour {
 
     void Start()
     {
-        player = UiManager.player;
+        //player = UiManager.player;
         itemInfo.text = itemName + "\n Cost: " + cost + "\nPower: "+ clickPower;
     }
 
