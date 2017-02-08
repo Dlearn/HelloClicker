@@ -59,10 +59,11 @@ public class Enemy : MonoBehaviour {
         enemyCurrentHealth = Mathf.Max(0.0f, enemyCurrentHealth);
         enemyHealth.value = enemyCurrentHealth;
         EnemyHealthText.text = enemyCurrentHealth + " / " + _maxHealth;
-        
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("RedKnightIdle"))
+
+        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
             anim.SetTrigger("Hurt");
-        
+        //anim.SetTrigger("Hurt");
+
         int randSoundClip = Random.Range(0, 5);
         float volScale = Random.Range(volLowRange, volHighRange);
         switch (randSoundClip)

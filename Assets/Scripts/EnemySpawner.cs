@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class EnemySpawner : MonoBehaviour {
+public class EnemySpawner : NetworkBehaviour
+{
 
     // GameObjects
     public static GameObject myManager;
     private Player player;
     public GameObject RedKnight;
+    public GameObject Smail;
     public UnityEngine.UI.Text goldDisplay;
     public Slider enemyHealth;
     public UnityEngine.UI.Text EnemyHealthText;
@@ -38,6 +40,7 @@ public class EnemySpawner : MonoBehaviour {
     private void SpawnEnemy()
     {
         GameObject newRedKnight = (GameObject) Instantiate(RedKnight, transform);
+        //GameObject newRedKnight = (GameObject)Instantiate(Smail, transform);
         newRedKnight.GetComponent<Enemy>().EnemySpawner = this;
         newRedKnight.GetComponent<Enemy>().player = player;
         newRedKnight.GetComponent<Enemy>().enemyHealth = enemyHealth;
