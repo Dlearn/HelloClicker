@@ -4,7 +4,7 @@ using System.Collections;
 public class upgradeManager : MonoBehaviour {
 
     // Other GameObjects
-    public UIManager UiManager;
+    public EnemySpawner EnemySpawner;
     public Player player;
     public UnityEngine.UI.Text itemInfo;
 
@@ -15,7 +15,7 @@ public class upgradeManager : MonoBehaviour {
 
     void Start()
     {
-        //player = UiManager.player;
+        //player = EnemySpawner.player;
         itemInfo.text = itemName + "\n Cost: " + cost + "\nPower: "+ clickPower;
     }
 
@@ -24,7 +24,7 @@ public class upgradeManager : MonoBehaviour {
         if (player.currentGold >= cost)
         {
             player.currentGold -= cost;
-            UiManager.UpdateGold();
+            EnemySpawner.UpdateGold();
             player.attackPerClick += clickPower;
         }
     }

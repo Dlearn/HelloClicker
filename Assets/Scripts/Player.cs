@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
     // Other GameObjects
     public Slider playerHealth;
     public UnityEngine.UI.Text PlayerHealthText;
-    public UnityEngine.UI.Text DebugText;
+    //public UnityEngine.UI.Text DebugText;
     public Image damageImage;
     public Image shield;
 

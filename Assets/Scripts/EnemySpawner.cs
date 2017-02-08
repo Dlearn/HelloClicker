@@ -2,14 +2,13 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour {
+public class EnemySpawner : MonoBehaviour {
 
     // GameObjects
     public static GameObject myManager;
     private Player player;
     public GameObject RedKnight;
     public UnityEngine.UI.Text goldDisplay;
-    public Image damageImage;
     public Slider enemyHealth;
     public UnityEngine.UI.Text EnemyHealthText;
 
@@ -39,7 +38,7 @@ public class UIManager : MonoBehaviour {
     private void SpawnEnemy()
     {
         GameObject newRedKnight = (GameObject) Instantiate(RedKnight, transform);
-        newRedKnight.GetComponent<Enemy>().UiManager = this;
+        newRedKnight.GetComponent<Enemy>().EnemySpawner = this;
         newRedKnight.GetComponent<Enemy>().player = player;
         newRedKnight.GetComponent<Enemy>().enemyHealth = enemyHealth;
         newRedKnight.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;

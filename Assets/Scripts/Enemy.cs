@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour {
 
     // Other GameObject References
-    public UIManager UiManager;
+    public EnemySpawner EnemySpawner;
     public Player player;
     
     public Slider enemyHealth;
@@ -107,8 +107,8 @@ public class Enemy : MonoBehaviour {
     {
         enemyHealth.gameObject.SetActive(false);
         Destroy(gameObject);
-        UiManager.SpawnEnemyInXSeconds(2f);   
+        EnemySpawner.SpawnEnemyInXSeconds(2f);   
         player.currentGold += _goldBounty;
-        UiManager.UpdateGold();
+        EnemySpawner.UpdateGold();
     }
 }

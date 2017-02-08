@@ -39,12 +39,11 @@ public class GpsSystem : MonoBehaviour {
         // Fake GPS to real location
         locs = new Dictionary<Vector2, string>();
         locs.Add(new Vector2(1.3077f, 103.7724f), "Cendana Staff Area");
-        locs.Add(new Vector2(1.3082f, 103.7726f), "MCS Classroom1");
-        locs.Add(new Vector2(1.3080f, 103.7725f), "MCS Classroom2");
+        locs.Add(new Vector2(1.3082f, 103.7726f), "MCS Classroom");
+        locs.Add(new Vector2(1.3080f, 103.7725f), "MCS Classroom");
         locs.Add(new Vector2(1.3081f, 103.7723f), "Cendana Dining Hall");
         locs.Add(new Vector2(1.3082f, 103.7723f), "Cendana Dining Hall");
-        locs.Add(new Vector2(1.3081f, 103.7725f), "Cendana Dining Hall");
-        locs.Add(new Vector2(1.3082f, 103.7725f), "Cendana Dining Hall");
+        //locs.Add(new Vector2(1.3081f, 103.7725f), "Cendana Dining Hall");
         locs.Add(new Vector2(1.3085f, 103.7715f), "Dylan's Room");
         locs.Add(new Vector2(1.3078f, 103.7723f), "Dylan's Room");
 
@@ -66,6 +65,7 @@ public class GpsSystem : MonoBehaviour {
 
         // Real location to real GPS
         coords = new Dictionary<string, Vector2>();
+        coords.Add("MCS Classroom", new Vector2(103.7728f, 1.308076f));
         coords.Add("Cendana Dining Hall", new Vector2(103.7724f, 1.3084f));
         coords.Add("Dylan's Room", new Vector2(103.7727f, 1.3080f));
         coords.Add("MPH1", new Vector2(103.77285f, 1.30770f));
@@ -86,7 +86,7 @@ public class GpsSystem : MonoBehaviour {
         {
             // Method to calculate "correct" GPS
             print((1.1f + 3f) / SCALE_X + MIN_LONG);
-            print((1.35f + 5f) / SCALE_Y + MIN_LAT);
+            print((2.6f + 5f) / SCALE_Y + MIN_LAT);
 
             // Method to check distances
             //print(Vector2.Distance(new Vector2(1.306181f, 103.7722f), new Vector2(1.308547f, 103.7715f)));
