@@ -39,11 +39,16 @@ public class EnemySpawner : NetworkBehaviour
 
     private void SpawnEnemy()
     {
-        GameObject newRedKnight = (GameObject) Instantiate(RedKnight, transform);
-        //GameObject newRedKnight = (GameObject)Instantiate(Smail, transform);
-        newRedKnight.GetComponent<Enemy>().EnemySpawner = this;
-        newRedKnight.GetComponent<Enemy>().player = player;
-        newRedKnight.GetComponent<Enemy>().enemyHealth = enemyHealth;
-        newRedKnight.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
+        GameObject enemy;
+        int r = Random.Range(0, 2);
+        if (r==0)
+            enemy = (GameObject) Instantiate(RedKnight, transform);
+        else 
+            enemy = (GameObject)Instantiate(Smail, transform);
+
+        enemy.GetComponent<Enemy>().EnemySpawner = this;
+        enemy.GetComponent<Enemy>().player = player;
+        enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
+        enemy.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
     }
 }

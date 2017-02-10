@@ -62,7 +62,6 @@ public class Enemy : MonoBehaviour {
 
         if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
             anim.SetTrigger("Hurt");
-        //anim.SetTrigger("Hurt");
 
         int randSoundClip = Random.Range(0, 5);
         float volScale = Random.Range(volLowRange, volHighRange);
