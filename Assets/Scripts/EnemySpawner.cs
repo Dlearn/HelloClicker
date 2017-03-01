@@ -10,6 +10,7 @@ public class EnemySpawner : NetworkBehaviour
     private Player player;
     public GameObject RedKnight;
     public GameObject Smail;
+    public GameObject LianHwa;
     public UnityEngine.UI.Text goldDisplay;
     public Slider enemyHealth;
     public UnityEngine.UI.Text EnemyHealthText;
@@ -41,10 +42,10 @@ public class EnemySpawner : NetworkBehaviour
     {
         GameObject enemy;
         int r = Random.Range(0, 2);
-        if (r==0)
-            enemy = (GameObject) Instantiate(RedKnight, transform);
+        if (r==1)
+            enemy = (GameObject) Instantiate(LianHwa, transform);
         else 
-            enemy = (GameObject)Instantiate(Smail, transform);
+            enemy = (GameObject) Instantiate(Smail, transform);
 
         enemy.GetComponent<Enemy>().EnemySpawner = this;
         enemy.GetComponent<Enemy>().player = player;
