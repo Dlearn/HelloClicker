@@ -41,11 +41,13 @@ public class EnemySpawner : NetworkBehaviour
     private void SpawnEnemy()
     {
         GameObject enemy;
-        int r = Random.Range(0, 2);
-        if (r==1)
-            enemy = (GameObject) Instantiate(LianHwa, transform);
-        else 
+        int r = Random.Range(0, 3);
+        if (r==0)
+            enemy = (GameObject) Instantiate(RedKnight, transform);
+        else if (r==1)
             enemy = (GameObject) Instantiate(Smail, transform);
+        else
+            enemy = (GameObject) Instantiate(LianHwa, transform);
 
         enemy.GetComponent<Enemy>().EnemySpawner = this;
         enemy.GetComponent<Enemy>().player = player;
