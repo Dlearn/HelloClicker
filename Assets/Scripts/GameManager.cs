@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SocketIO;
@@ -12,7 +10,7 @@ public class GameManager : MonoBehaviour {
     public static SocketIOComponent socket;
     public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 
-    private InputField username_input;
+    private GameObject UsernameInput, SubmitUsername, InviteList;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -35,7 +33,9 @@ public class GameManager : MonoBehaviour {
 
     public void Start()
     {
-        username_input = GameObject.Find("UsernameInput").GetComponent<InputField>();
+        UsernameInput = GameObject.Find("UsernameInput");
+        SubmitUsername = GameObject.Find("SubmitUsername");
+        InviteList = GameObject.Find("InviteList");
 
         socket = GetComponent<SocketIOComponent>();
 
@@ -43,26 +43,50 @@ public class GameManager : MonoBehaviour {
         socket.On("error", TestError);
         socket.On("close", TestClose);
 
-        socket.On("form party", FormParty);
-        socket.On("party on obj", PartyOnObj);
+        socket.On("login", (SocketIOEvent e) => {
+            UsernameInput.SetActive(false);
+            SubmitUsername.SetActive(false);
+            // Query for who is online
+            InvokeRepeating("LookingForParty", 0, PING_FREQUENCY);
+        });
+        socket.On("solo players", (SocketIOEvent e) => {
+            var obj = e.data;
+
+            for (int i = 0; i < obj.list.Count; i++)
+            {
+                //print(obj.keys[i]);
+                print(obj.list[i].str);
+            }
+        });
+
+        socket.On("form party", (SocketIOEvent e) => {
+            socket.Emit("formed party");
+            CancelInvoke();
+
+            // START WALKING
+            InvokeRepeating("SendCoordinates", 0, PING_FREQUENCY);
+        });
+        socket.On("party on obj", (SocketIOEvent e) => {
+            CancelInvoke();
+            socket.Emit("fighting boss");
+        });
         //socket.On("boss hit", BossHit);
-    }
-
-    private IEnumerator Foo()
-    {
-        // wait 1 seconds and continue
-        yield return new WaitForSeconds(1);
-
-        socket.Emit("add user");
     }
 
     public void addUser()
     {
-        print(username_input.text);
-        JSONObject username = new JSONObject(JSONObject.Type.OBJECT);
-        username.AddField("username", username_input.text);
-        socket.Emit("add user", username);
-        // TODO: START SEARCHING
+        String username = UsernameInput.GetComponent<InputField>().text;
+        if (username != "")
+        { 
+            JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
+            data.AddField("username", username);
+            socket.Emit("add user", data);
+        }
+    }
+
+    void LookingForParty()
+    {
+        socket.Emit("get solos");
     }
 
     public void invitePlayer()
@@ -73,29 +97,14 @@ public class GameManager : MonoBehaviour {
         socket.Emit("invite", invitee);
     }
 
-    void FormParty(SocketIOEvent e)
-    {
-        socket.Emit("formed party");
-        CancelInvoke();
-
-        // START SEARCHING
-        InvokeRepeating("SendCoordinates", 0, PING_FREQUENCY);
-    }
-
-    void PartyOnObj(SocketIOEvent e)
-    {
-        CancelInvoke();
-        socket.Emit("fighting boss");
-    }
-
     void SendCoordinates()
     {
-        int jitter_x = UnityEngine.Random.Range(0,3); // -1,0,1,2
-        int jitter_y = UnityEngine.Random.Range(0,3); // -1,0,1,2
+        int jitter_x = UnityEngine.Random.Range(0, 3); // -1,0,1,2
+        int jitter_y = UnityEngine.Random.Range(0, 3); // -1,0,1,2
         print(jitter_x + ", " + jitter_y);
         JSONObject coord = new JSONObject(JSONObject.Type.OBJECT);
-        coord.AddField("x", 50+jitter_x);
-        coord.AddField("y", 50+jitter_y);
+        coord.AddField("x", 50 + jitter_x);
+        coord.AddField("y", 50 + jitter_y);
         socket.Emit("cur coord", coord);
     }
 
