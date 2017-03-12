@@ -5,12 +5,21 @@ using SocketIO;
 
 public class GameManager : MonoBehaviour {
 
+    // Constants
     const int PING_FREQUENCY = 5;
 
+    // Public GameObjects
+    public GameObject InviteButton;
+
+    // Private GameObjects found at runtime
+    private GameObject UsernameInput, SubmitUsername, InviteList;
+
+    // Static singletons
     public static SocketIOComponent socket;
     public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 
-    private GameObject UsernameInput, SubmitUsername, InviteList;
+    // Variables
+    private String myUsername;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -51,14 +60,31 @@ public class GameManager : MonoBehaviour {
         });
         socket.On("solo players", (SocketIOEvent e) => {
             var obj = e.data;
+            //print(obj.keys[i]); print(obj.list[i].str);
 
+            // KILL ALL THE CHILDREN
+            foreach (Transform child in InviteList.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            // Create new children
             for (int i = 0; i < obj.list.Count; i++)
             {
-                //print(obj.keys[i]);
-                print(obj.list[i].str);
+                String playerName = obj.list[i].str;
+                if (playerName == myUsername) continue; // Can't invite yourself
+
+                GameObject newInviteButton = Instantiate(InviteButton);
+                newInviteButton.GetComponentInChildren<Text>().text = "Invite " + playerName;
+                newInviteButton.transform.SetParent(InviteList.transform, false);
+                Button btn = newInviteButton.GetComponent<Button>();
+                btn.onClick.AddListener(() => {
+                    JSONObject invitee = new JSONObject(JSONObject.Type.OBJECT);
+                    invitee.AddField("username", playerName);
+                    socket.Emit("invite", invitee);
+                });
             }
         });
-
         socket.On("form party", (SocketIOEvent e) => {
             socket.Emit("formed party");
             CancelInvoke();
@@ -77,7 +103,8 @@ public class GameManager : MonoBehaviour {
     {
         String username = UsernameInput.GetComponent<InputField>().text;
         if (username != "")
-        { 
+        {
+            myUsername = username;
             JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
             data.AddField("username", username);
             socket.Emit("add user", data);
@@ -91,7 +118,6 @@ public class GameManager : MonoBehaviour {
 
     public void invitePlayer()
     {
-        print("invite!");
         JSONObject invitee = new JSONObject(JSONObject.Type.OBJECT);
         invitee.AddField("username", "user0");
         socket.Emit("invite", invitee);
