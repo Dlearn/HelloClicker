@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using SocketIO;
 
 public class GameManager : MonoBehaviour {
@@ -8,18 +9,16 @@ public class GameManager : MonoBehaviour {
     // Constants
     const int PING_FREQUENCY = 5;
 
-    // Public GameObjects
-    public GameObject InviteButton;
-
-    // Private GameObjects found at runtime
-    private GameObject UsernameInput, SubmitUsername, InviteList;
-
     // Static singletons
     public static SocketIOComponent socket;
     public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 
-    // Variables
-    private String myUsername;
+    // Public Variables
+    public String myUsername;
+
+    // References to other scripts
+    private LoginManager loginManager;
+    private SoloManager soloManager;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -42,10 +41,6 @@ public class GameManager : MonoBehaviour {
 
     public void Start()
     {
-        UsernameInput = GameObject.Find("UsernameInput");
-        SubmitUsername = GameObject.Find("SubmitUsername");
-        InviteList = GameObject.Find("InviteList");
-
         socket = GetComponent<SocketIOComponent>();
 
         socket.On("open", TestOpen);
@@ -53,37 +48,20 @@ public class GameManager : MonoBehaviour {
         socket.On("close", TestClose);
 
         socket.On("login", (SocketIOEvent e) => {
-            UsernameInput.SetActive(false);
-            SubmitUsername.SetActive(false);
             // Query for who is online
             InvokeRepeating("LookingForParty", 0, PING_FREQUENCY);
+            SceneManager.LoadScene("Solo");
         });
         socket.On("solo players", (SocketIOEvent e) => {
+            // If the scene has changed, do nothing
+            if (SceneManager.GetActiveScene().name != "Solo") return;
+
+            // If we haven't found SoloManager, find it now.
+            if (soloManager == null)
+                soloManager = GameObject.Find("Main Camera").GetComponent<SoloManager>();
+
             var obj = e.data;
-            //print(obj.keys[i]); print(obj.list[i].str);
-
-            // KILL ALL THE CHILDREN
-            foreach (Transform child in InviteList.transform)
-            {
-                Destroy(child.gameObject);
-            }
-
-            // Create new children
-            for (int i = 0; i < obj.list.Count; i++)
-            {
-                String playerName = obj.list[i].str;
-                if (playerName == myUsername) continue; // Can't invite yourself
-
-                GameObject newInviteButton = Instantiate(InviteButton);
-                newInviteButton.GetComponentInChildren<Text>().text = "Invite " + playerName;
-                newInviteButton.transform.SetParent(InviteList.transform, false);
-                Button btn = newInviteButton.GetComponent<Button>();
-                btn.onClick.AddListener(() => {
-                    JSONObject invitee = new JSONObject(JSONObject.Type.OBJECT);
-                    invitee.AddField("username", playerName);
-                    socket.Emit("invite", invitee);
-                });
-            }
+            soloManager.UpdateList(obj);
         });
         socket.On("form party", (SocketIOEvent e) => {
             socket.Emit("formed party");
@@ -94,21 +72,10 @@ public class GameManager : MonoBehaviour {
         });
         socket.On("party on obj", (SocketIOEvent e) => {
             CancelInvoke();
+            SceneManager.LoadScene("Fight");
             socket.Emit("fighting boss");
         });
         //socket.On("boss hit", BossHit);
-    }
-
-    public void addUser()
-    {
-        String username = UsernameInput.GetComponent<InputField>().text;
-        if (username != "")
-        {
-            myUsername = username;
-            JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
-            data.AddField("username", username);
-            socket.Emit("add user", data);
-        }
     }
 
     void LookingForParty()

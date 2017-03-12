@@ -107,7 +107,8 @@ public class Enemy : MonoBehaviour {
     {
         enemyHealth.gameObject.SetActive(false);
         Destroy(gameObject);
-        EnemySpawner.SpawnEnemyInXSeconds(2f);   
+        GameObject.Find("VICTORY").SetActive(true);
+        //EnemySpawner.SpawnEnemyInXSeconds(2f);   
         player.currentGold += _goldBounty;
         EnemySpawner.UpdateGold();
     }
