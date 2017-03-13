@@ -7,14 +7,15 @@ public class Enemy : MonoBehaviour {
     public FightManager FightManager;
     public Player player;
     
+    // Enemy UI
     public Slider enemyHealth;
     public UnityEngine.UI.Text EnemyHealthText;
 
+    // Animator
     private Animator anim;
 
-    // Enemy Sounds
+    // Audio
     private AudioSource _audioSouce;
-
     public AudioClip goldSound0;
     public AudioClip goldSound1;
     public AudioClip goldSound2;
@@ -23,14 +24,12 @@ public class Enemy : MonoBehaviour {
     private float volLowRange = 0.5f;
     private float volHighRange = 1.0f;
 
-    // Enemy Constants
-    private float enemyCurrentHealth;
-    private int _maxHealth = 20;
-    private int _goldBounty = 10;
-    private float _attackPeriod = 5.0f;
+    // Enemy Variables
+    private int enemyCurrentHealth;
+    private int maxHealth;
+    private int goldBounty = 10;
+    private float attackPeriod = 5.0f;
     
-
-    // Use this for initialization
     void Awake()
     {
         _audioSouce = GetComponent<AudioSource>();
@@ -40,20 +39,21 @@ public class Enemy : MonoBehaviour {
     void Start()
     {
         enemyHealth.gameObject.SetActive(true);
-        enemyCurrentHealth = _maxHealth;
-        EnemyHealthText.text = enemyCurrentHealth + " / " + _maxHealth;
-        InvokeRepeating("AttackTrigger", 1.0f, _attackPeriod);
-        
-        //enemyHealth.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        maxHealth = GameManager.instance.bossHealth;
+        enemyHealth.maxValue = maxHealth;
+        enemyCurrentHealth = GameManager.instance.bossHealth;
         enemyHealth.value = enemyCurrentHealth;
+        EnemyHealthText.text = enemyCurrentHealth + " / " + maxHealth;
+
+        InvokeRepeating("AttackTrigger", 1.0f, attackPeriod);
     }
 
     private void OnMouseDown() // Player attacks enemy
     {
-        enemyCurrentHealth -= player.attackPerClick;
-        enemyCurrentHealth = Mathf.Max(0.0f, enemyCurrentHealth);
-        enemyHealth.value = enemyCurrentHealth;
-        EnemyHealthText.text = enemyCurrentHealth + " / " + _maxHealth;
+        //enemyCurrentHealth -= player.attackPerClick;
+        //enemyCurrentHealth = Mathf.Max(0, enemyCurrentHealth);
+        //enemyHealth.value = enemyCurrentHealth;
+        //EnemyHealthText.text = enemyCurrentHealth + " / " + maxHealth;
 
         // Play Animation
         if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour {
         }
 
         JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
-        data.AddField("damage", Random.Range(10,30));
+        data.AddField("damage", Random.Range(3,7));
         GameManager.socket.Emit("attack", data);
 
         if (enemyCurrentHealth <= 0)
@@ -91,11 +91,12 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    public void UpdateHealth(JSONObject obj)
+    public void UpdateHealth(int remainingHealth)
     {
-        // TODO: New health
-        print("Update Health.");
-        return;
+        enemyCurrentHealth = remainingHealth;
+        enemyCurrentHealth = Mathf.Max(0, enemyCurrentHealth);
+        enemyHealth.value = enemyCurrentHealth;
+        EnemyHealthText.text = enemyCurrentHealth + " / " + maxHealth;
     }
 
     private void AttackTrigger()
@@ -126,7 +127,7 @@ public class Enemy : MonoBehaviour {
         //FightManager.SpawnEnemyInXSeconds(2f);   
 
         // TODO: Get gold! GetGold()
-        player.currentGold += _goldBounty;
+        player.currentGold += goldBounty;
         FightManager.UpdateGold();
     }
 }

@@ -3,14 +3,17 @@ using UnityEngine.UI;
 
 public class FightManager : MonoBehaviour {
 
+    // Serialized variables
     [SerializeField]
     private GameObject RedKnight, Smail, LianHwa;
     [SerializeField]
     private UnityEngine.UI.Text goldDisplay, EnemyHealthText;
+    [SerializeField]
+    private Slider enemyHealth;
 
     private Player player;
     
-    public Slider enemyHealth;
+    
 
     void Start () {
         player = GetComponent<Player>();
@@ -34,12 +37,11 @@ public class FightManager : MonoBehaviour {
     private void SpawnEnemy()
     {
         GameObject enemy;
-        int r = Random.Range(0, 3); // 0,1,2
-        if (r==0)
+        if (GameManager.instance.bossType == "RedKnight")
             enemy = (GameObject) Instantiate(RedKnight, transform);
-        else if (r==1)
+        else if (GameManager.instance.bossType == "Smail")
             enemy = (GameObject) Instantiate(Smail, transform);
-        else
+        else // "LianHwa"
             enemy = (GameObject) Instantiate(LianHwa, transform);
 
         enemy.GetComponent<Enemy>().FightManager = this;

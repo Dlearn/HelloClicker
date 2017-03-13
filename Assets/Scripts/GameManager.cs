@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour {
     public int bossHealth;
 
     // References to other scripts
-    private LoginManager loginManager;
     private SoloManager soloManager;
     private Enemy enemy;
 
@@ -87,8 +86,8 @@ public class GameManager : MonoBehaviour {
             if (enemy == null)
                 enemy = GameObject.FindGameObjectWithTag("Monster").GetComponent<Enemy>();
 
-            var obj = e.data;
-            enemy.UpdateHealth(obj);
+            int remainingHealth = (int)e.data.list[0].n;
+            enemy.UpdateHealth(remainingHealth);
         });
     }
 
