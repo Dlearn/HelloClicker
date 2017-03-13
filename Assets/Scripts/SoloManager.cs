@@ -1,15 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SoloManager : MonoBehaviour {
 
     [SerializeField]
-    private GameObject InviteList, InviteButton;
-
-    void Awake () {
-        GameManager GameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-    }
+    private GameObject InviteListPanel, InviteList, InviteButton;
 
     public void UpdateList(JSONObject obj)
     {
@@ -24,7 +19,7 @@ public class SoloManager : MonoBehaviour {
         // Create new children
         for (int i = 0; i < obj.list.Count; i++)
         {
-            String playerName = obj.list[i].str;
+            string playerName = obj.list[i].str;
             if (playerName == GameManager.instance.myUsername) continue; // Can't invite yourself
 
             GameObject newInviteButton = Instantiate(InviteButton);
@@ -36,6 +31,7 @@ public class SoloManager : MonoBehaviour {
                 JSONObject invitee = new JSONObject(JSONObject.Type.OBJECT);
                 invitee.AddField("username", playerName);
                 GameManager.socket.Emit("invite", invitee);
+                InviteListPanel.SetActive(false);
             });
         }
     }

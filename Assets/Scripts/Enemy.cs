@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour {
 
     // Other GameObject References
-    public EnemySpawner EnemySpawner;
+    public FightManager FightManager;
     public Player player;
     
     public Slider enemyHealth;
@@ -49,10 +48,6 @@ public class Enemy : MonoBehaviour {
         enemyHealth.value = enemyCurrentHealth;
     }
 
-    void Update()
-    {
-    }
-
     private void OnMouseDown() // Player attacks enemy
     {
         enemyCurrentHealth -= player.attackPerClick;
@@ -60,9 +55,11 @@ public class Enemy : MonoBehaviour {
         enemyHealth.value = enemyCurrentHealth;
         EnemyHealthText.text = enemyCurrentHealth + " / " + _maxHealth;
 
+        // Play Animation
         if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
             anim.SetTrigger("Hurt");
 
+        // Play Sound
         int randSoundClip = Random.Range(0, 5);
         float volScale = Random.Range(volLowRange, volHighRange);
         switch (randSoundClip)
@@ -84,10 +81,21 @@ public class Enemy : MonoBehaviour {
                 break;
         }
 
+        JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
+        data.AddField("damage", Random.Range(10,30));
+        GameManager.socket.Emit("attack", data);
+
         if (enemyCurrentHealth <= 0)
         {
             Death();
         }
+    }
+
+    public void UpdateHealth(JSONObject obj)
+    {
+        // TODO: New health
+        print("Update Health.");
+        return;
     }
 
     private void AttackTrigger()
@@ -99,17 +107,26 @@ public class Enemy : MonoBehaviour {
 
     private void DamagePlayer()
     {
-        //print("Damaged");
-        player.GetHitXDamage(10);
+        player.GetHitXDamage(15);
     }
 
     public void Death()
     {
+        // Stop attack trigger
+        CancelInvoke();
+
+        // Destroy the GameObject
         enemyHealth.gameObject.SetActive(false);
         Destroy(gameObject);
+
+        // Display Victory
         GameObject.Find("VICTORY").GetComponent<Text>().text = "VICTORY";
-        //EnemySpawner.SpawnEnemyInXSeconds(2f);   
+
+        // Spawn new enemy
+        //FightManager.SpawnEnemyInXSeconds(2f);   
+
+        // TODO: Get gold! GetGold()
         player.currentGold += _goldBounty;
-        EnemySpawner.UpdateGold();
+        FightManager.UpdateGold();
     }
 }

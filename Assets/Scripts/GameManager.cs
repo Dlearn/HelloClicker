@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using SocketIO;
 
@@ -14,11 +12,14 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 
     // Public Variables
-    public String myUsername;
+    public string myUsername;
+    public string bossType;
+    public int bossHealth;
 
     // References to other scripts
     private LoginManager loginManager;
     private SoloManager soloManager;
+    private Enemy enemy;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -73,9 +74,22 @@ public class GameManager : MonoBehaviour {
         socket.On("party on obj", (SocketIOEvent e) => {
             CancelInvoke();
             SceneManager.LoadScene("Fight");
+
+            bossType = e.data.list[0].str;
+            bossHealth = (int) e.data.list[1].n;
             socket.Emit("fighting boss");
         });
-        //socket.On("boss hit", BossHit);
+        socket.On("boss hit", (SocketIOEvent e) => {
+            // If the scene has changed, do nothing
+            if (SceneManager.GetActiveScene().name != "Fight") return;
+
+            // If we haven't found SoloManager, find it now.
+            if (enemy == null)
+                enemy = GameObject.FindGameObjectWithTag("Monster").GetComponent<Enemy>();
+
+            var obj = e.data;
+            enemy.UpdateHealth(obj);
+        });
     }
 
     void LookingForParty()
@@ -92,8 +106,9 @@ public class GameManager : MonoBehaviour {
 
     void SendCoordinates()
     {
-        int jitter_x = UnityEngine.Random.Range(0, 3); // -1,0,1,2
-        int jitter_y = UnityEngine.Random.Range(0, 3); // -1,0,1,2
+        int jitter_x = Random.Range(0, 2); // 0,1
+        int jitter_y = Random.Range(0, 2); // 0,1
+        
         print(jitter_x + ", " + jitter_y);
         JSONObject coord = new JSONObject(JSONObject.Type.OBJECT);
         coord.AddField("x", 50 + jitter_x);
