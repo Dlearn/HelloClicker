@@ -42,9 +42,9 @@ public class Enemy : MonoBehaviour {
         enemyHealth.gameObject.SetActive(true);
         maxHealth = GameManager.instance.bossHealth;
         enemyHealth.maxValue = maxHealth;
-        enemyCurrentHealth = GameManager.instance.bossHealth;
-        enemyHealth.value = enemyCurrentHealth;
-        EnemyHealthText.text = enemyCurrentHealth + " / " + maxHealth;
+        enemyCurrentHealth = maxHealth;
+        enemyHealth.value = maxHealth;
+        EnemyHealthText.text = maxHealth + " / " + maxHealth;
 
         InvokeRepeating("AttackTrigger", 1.0f, attackPeriod);
     }
@@ -84,6 +84,7 @@ public class Enemy : MonoBehaviour {
 
     public void UpdateHealth(int remainingHealth)
     {
+        print(remainingHealth);
         enemyCurrentHealth = remainingHealth;
         enemyCurrentHealth = Mathf.Max(0, enemyCurrentHealth);
         enemyHealth.value = enemyCurrentHealth;
@@ -104,6 +105,7 @@ public class Enemy : MonoBehaviour {
 
     private void DamagePlayer()
     {
+        player.enemy = this;
         player.GetHitXDamage(15);
     }
 
@@ -120,7 +122,7 @@ public class Enemy : MonoBehaviour {
         gameObject.SetActive(false);
 
         // Display Victory
-        GameObject.Find("VICTORY").GetComponent<Text>().text = "VICTORY";
+        GameObject.Find("AnnouncementText").GetComponent<Text>().text = "VICTORY";
 
         // Spawn new enemy
         //FightManager.SpawnEnemyInXSeconds(2f);   

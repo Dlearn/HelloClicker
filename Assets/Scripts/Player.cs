@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
@@ -8,7 +9,6 @@ public class Player : MonoBehaviour {
     // Other GameObjects
     public Slider playerHealth;
     public UnityEngine.UI.Text PlayerHealthText;
-    //public UnityEngine.UI.Text DebugText;
     public Image damageImage;
     public Image shield;
 
@@ -17,6 +17,9 @@ public class Player : MonoBehaviour {
     public int currentHealth = 100;
     public int attackPerClick;
     public int currentGold = 0;
+
+    // Other Scripts
+    public Enemy enemy;
 
     // Sound
     private AudioSource _audioSouce;
@@ -45,7 +48,6 @@ public class Player : MonoBehaviour {
 
     public void GetHitXDamage(int damage)
     {
-        //Touch[] myTouches = Input.touches;
         if (Input.touchCount == 2)
         {
             _audioSouce.PlayOneShot(blockSound, 1f);
@@ -78,10 +80,20 @@ public class Player : MonoBehaviour {
 
     void Death()
     {
-        print("Game Over");
+        // TODO: Decide what happens when player dies
+        CancelInvoke();
+        GameObject.Find("AnnouncementText").GetComponent<Text>().text = "Game Over";
+
+        // Change scene in 3 seconds
+        Invoke("LoadSoloScene", 3);
     }
-	
-	void Update ()
+
+    void LoadSoloScene()
+    {
+        SceneManager.LoadScene("Solo");
+    }
+
+    void Update ()
     {
         // Flash Red
         if (damaged)

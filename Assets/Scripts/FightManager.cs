@@ -13,16 +13,10 @@ public class FightManager : MonoBehaviour {
 
     private Player player;
     
-    
-
     void Start () {
         player = GetComponent<Player>();
         Invoke("SpawnEnemy", 1.0f);
     }
-	
-	void Update () {
-	
-	}
 
     public void UpdateGold()
     {

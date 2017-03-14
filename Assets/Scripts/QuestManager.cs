@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GpsSystem : MonoBehaviour {
+public class QuestManager : MonoBehaviour {
     // Define 103.7717,1.3054 = -2.31,-4.45
     // Define 103.7729,1.30865 = 2.22, 4.78
     const float MIN_LONG = 103.7717f;
@@ -44,6 +42,7 @@ public class GpsSystem : MonoBehaviour {
         locs.Add(new Vector2(1.3081f, 103.7723f), "Cendana Dining Hall");
         locs.Add(new Vector2(1.3082f, 103.7723f), "Cendana Dining Hall");
         //locs.Add(new Vector2(1.3081f, 103.7725f), "Cendana Dining Hall");
+        locs.Add(new Vector2(1.3088f, 103.7714f), "Dylan's Room");
         locs.Add(new Vector2(1.3085f, 103.7715f), "Dylan's Room");
         locs.Add(new Vector2(1.3078f, 103.7723f), "Dylan's Room");
 
