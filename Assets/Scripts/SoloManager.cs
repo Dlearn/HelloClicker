@@ -5,6 +5,11 @@ public class SoloManager : MonoBehaviour {
 
     [SerializeField]
     private GameObject InviteListPanel, InviteList, InviteButton;
+    void Start()
+    {
+        // Query for who is online
+        InvokeRepeating("LookingForParty", 0, GameManager.instance.PING_FREQUENCY);
+    }
 
     public void UpdateList(JSONObject obj)
     {
@@ -34,5 +39,10 @@ public class SoloManager : MonoBehaviour {
                 InviteListPanel.SetActive(false);
             });
         }
+    }
+
+    void LookingForParty()
+    {
+        GameManager.socket.Emit("get solos");
     }
 }

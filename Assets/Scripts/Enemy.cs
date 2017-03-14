@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour {
@@ -50,11 +51,6 @@ public class Enemy : MonoBehaviour {
 
     private void OnMouseDown() // Player attacks enemy
     {
-        //enemyCurrentHealth -= player.attackPerClick;
-        //enemyCurrentHealth = Mathf.Max(0, enemyCurrentHealth);
-        //enemyHealth.value = enemyCurrentHealth;
-        //EnemyHealthText.text = enemyCurrentHealth + " / " + maxHealth;
-
         // Play Animation
         if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
             anim.SetTrigger("Hurt");
@@ -84,11 +80,6 @@ public class Enemy : MonoBehaviour {
         JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
         data.AddField("damage", Random.Range(3,7));
         GameManager.socket.Emit("attack", data);
-
-        if (enemyCurrentHealth <= 0)
-        {
-            Death();
-        }
     }
 
     public void UpdateHealth(int remainingHealth)
@@ -97,6 +88,11 @@ public class Enemy : MonoBehaviour {
         enemyCurrentHealth = Mathf.Max(0, enemyCurrentHealth);
         enemyHealth.value = enemyCurrentHealth;
         EnemyHealthText.text = enemyCurrentHealth + " / " + maxHealth;
+
+        if (enemyCurrentHealth <= 0)
+        {
+            Death();
+        }
     }
 
     private void AttackTrigger()
@@ -115,10 +111,13 @@ public class Enemy : MonoBehaviour {
     {
         // Stop attack trigger
         CancelInvoke();
+        
+        // Change scene in 3 seconds
+        Invoke("LoadSoloScene", 3);
 
-        // Destroy the GameObject
+        // Make GameObject Inactive
         enemyHealth.gameObject.SetActive(false);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
 
         // Display Victory
         GameObject.Find("VICTORY").GetComponent<Text>().text = "VICTORY";
@@ -129,5 +128,11 @@ public class Enemy : MonoBehaviour {
         // TODO: Get gold! GetGold()
         player.currentGold += goldBounty;
         FightManager.UpdateGold();
+    }
+
+    void LoadSoloScene()
+    {
+        SceneManager.LoadScene("Solo");
+        Destroy(gameObject);
     }
 }

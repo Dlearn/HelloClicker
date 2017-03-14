@@ -5,7 +5,7 @@ using SocketIO;
 public class GameManager : MonoBehaviour {
 
     // Constants
-    const int PING_FREQUENCY = 5;
+    public int PING_FREQUENCY = 5;
 
     // Static singletons
     public static SocketIOComponent socket;
@@ -48,8 +48,6 @@ public class GameManager : MonoBehaviour {
         socket.On("close", TestClose);
 
         socket.On("login", (SocketIOEvent e) => {
-            // Query for who is online
-            InvokeRepeating("LookingForParty", 0, PING_FREQUENCY);
             SceneManager.LoadScene("Solo");
         });
         socket.On("solo players", (SocketIOEvent e) => {
@@ -89,11 +87,9 @@ public class GameManager : MonoBehaviour {
             int remainingHealth = (int)e.data.list[0].n;
             enemy.UpdateHealth(remainingHealth);
         });
-    }
-
-    void LookingForParty()
-    {
-        socket.Emit("get solos");
+        socket.On("boss defeated", (SocketIOEvent) => {
+            socket.Emit("looking for party");
+        });
     }
 
     public void invitePlayer()
@@ -108,7 +104,6 @@ public class GameManager : MonoBehaviour {
         int jitter_x = Random.Range(0, 2); // 0,1
         int jitter_y = Random.Range(0, 2); // 0,1
         
-        print(jitter_x + ", " + jitter_y);
         JSONObject coord = new JSONObject(JSONObject.Type.OBJECT);
         coord.AddField("x", 50 + jitter_x);
         coord.AddField("y", 50 + jitter_y);
