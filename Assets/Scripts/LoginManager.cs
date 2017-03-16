@@ -1,10 +1,17 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+using UnityEngine;
 using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour {
 
     [SerializeField]
     private GameObject UsernameInput, SubmitUsername;
+
+    public void MakeLoginVisible()
+    {
+        UsernameInput.SetActive(true);
+        SubmitUsername.SetActive(true);
+    }
 
     public void addUser()
     {

@@ -12,27 +12,26 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 
     // Public Variables
+    public bool socketConnected;
     public string myUsername;
+    public string questObj;
     public string bossType;
     public int bossHealth;
 
     // References to other scripts
+    private LoginManager loginManager;
     private SoloManager soloManager;
     private Enemy enemy;
 
     //Awake is always called before any Start functions
     void Awake()
     {
-        //Check if instance already exists
+        //Check if instance already exists, if not, set instance to this
         if (instance == null)
-
-            //if not, set instance to this
             instance = this;
 
-        //If instance already exists and it's not this:
+        //If instance already exists and it's not this: Destroy it, there can only ever be one instance of GameManager
         else if (instance != this)
-
-            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
             Destroy(gameObject);
 
         //Sets this to not be destroyed when reloading scene
@@ -43,7 +42,11 @@ public class GameManager : MonoBehaviour {
     {
         socket = GetComponent<SocketIOComponent>();
 
-        socket.On("open", TestOpen);
+        //socket.On("open", TestOpen);
+        socket.On("open", (SocketIOEvent e) =>
+        {
+            socketConnected = true;
+        });
         socket.On("error", TestError);
         socket.On("close", TestClose);
 
@@ -62,11 +65,17 @@ public class GameManager : MonoBehaviour {
             soloManager.UpdateList(obj);
         });
         socket.On("form party", (SocketIOEvent e) => {
-            socket.Emit("formed party");
+            socket.Emit("transition quest");
+            if (SceneManager.GetActiveScene().name != "Solo") return;
+            soloManager.HideInviteListPanel();
+            // Cancel cur coord invokation
             CancelInvoke();
 
+            questObj = e.data.list[0].str;
+            SceneManager.LoadScene("Quest");
+
             // START WALKING
-            InvokeRepeating("SendCoordinates", 0, PING_FREQUENCY);
+            //InvokeRepeating("SendCoordinates", 0, PING_FREQUENCY);
         });
         socket.On("party on obj", (SocketIOEvent e) => {
             CancelInvoke();
@@ -74,7 +83,7 @@ public class GameManager : MonoBehaviour {
 
             bossType = e.data.list[0].str;
             bossHealth = (int) e.data.list[1].n;
-            socket.Emit("fighting boss");
+            socket.Emit("transition fight");
         });
         socket.On("boss hit", (SocketIOEvent e) => {
             // If the scene has changed, do nothing
@@ -88,8 +97,26 @@ public class GameManager : MonoBehaviour {
             enemy.UpdateHealth(remainingHealth);
         });
         socket.On("boss defeated", (SocketIOEvent) => {
-            socket.Emit("looking for party");
+            socket.Emit("back transition solo");
         });
+    }
+
+    void Update()
+    {
+        if (socketConnected)
+        {
+            socketConnected = false;
+            if (SceneManager.GetActiveScene().name != "LoginSplash")
+            {
+                Debug.LogWarning("Open, but not in LoginSplash");
+                return;
+            }
+
+            if (loginManager == null)
+                loginManager = GameObject.Find("Main Camera").GetComponent<LoginManager>();
+
+            loginManager.MakeLoginVisible();
+        }
     }
 
     public void invitePlayer()

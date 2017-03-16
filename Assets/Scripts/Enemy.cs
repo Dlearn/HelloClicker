@@ -84,7 +84,6 @@ public class Enemy : MonoBehaviour {
 
     public void UpdateHealth(int remainingHealth)
     {
-        print(remainingHealth);
         enemyCurrentHealth = remainingHealth;
         enemyCurrentHealth = Mathf.Max(0, enemyCurrentHealth);
         enemyHealth.value = enemyCurrentHealth;

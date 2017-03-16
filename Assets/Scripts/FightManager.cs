@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+using UnityEngine;
 using UnityEngine.UI;
 
 public class FightManager : MonoBehaviour {
@@ -15,7 +16,7 @@ public class FightManager : MonoBehaviour {
     
     void Start () {
         player = GetComponent<Player>();
-        Invoke("SpawnEnemy", 1.0f);
+        Invoke("SpawnEnemy", 1.5f);
     }
 
     public void UpdateGold()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#pragma warning disable 0649
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,12 +19,10 @@ public class QuestManager : MonoBehaviour {
 
     public bool FakingLocation;
 
-    public UnityEngine.UI.Text textBox1;
-    public UnityEngine.UI.Text textBox2;
+    [SerializeField]
+    private UnityEngine.UI.Text textBox1, textBox2;
     public GameObject playerActual;
 
-    //LocationInfo currentGPSPosition;
-    //double lastTimestamp = 0;
     float lastLatitude = 0;
 
     Dictionary<Vector2, string> locs;
@@ -32,7 +31,10 @@ public class QuestManager : MonoBehaviour {
 
     void Start ()
     {
-        print("Start");
+        print("Start: Obj is at " + GameManager.instance.questObj);
+
+        // Send my coordinates
+        InvokeRepeating("SendArrived", 0, GameManager.instance.PING_FREQUENCY);
 
         // Fake GPS to real location
         locs = new Dictionary<Vector2, string>();
@@ -122,6 +124,13 @@ public class QuestManager : MonoBehaviour {
                 textBox2.text = "GPS not available";
             }
         }
+    }
+
+    private void SendArrived()
+    {
+        JSONObject data = new JSONObject(JSONObject.Type.BOOL);
+        data.b = true;
+        GameManager.socket.Emit("has arrived", data);
     }
 
     void RetrieveGPSData()

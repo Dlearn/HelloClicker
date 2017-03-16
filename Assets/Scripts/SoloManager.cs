@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0649
+using UnityEngine;
 using UnityEngine.UI;
 
 public class SoloManager : MonoBehaviour {
@@ -36,9 +37,13 @@ public class SoloManager : MonoBehaviour {
                 JSONObject invitee = new JSONObject(JSONObject.Type.OBJECT);
                 invitee.AddField("username", playerName);
                 GameManager.socket.Emit("invite", invitee);
-                InviteListPanel.SetActive(false);
             });
         }
+    }
+
+    public void HideInviteListPanel()
+    {
+        InviteListPanel.SetActive(false);
     }
 
     void LookingForParty()
