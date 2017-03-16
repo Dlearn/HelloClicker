@@ -189,10 +189,12 @@ public class QuestManager : MonoBehaviour {
             textBox2.text = location;
             if (location.StartsWith(objectiveLocation))
             {
+                // TODO: UI SHOW ARRIVED, NEEDS OTHER PLAYER USERNAME
                 print("ARRIVED AT " + location);
                 hasArrived = true;
             } else
             {
+                // TODO: UI SHOW NOT ARRIVED
                 print("Not arrived, " + location + " does not start with " + objectiveLocation);
                 hasArrived = false;
             }

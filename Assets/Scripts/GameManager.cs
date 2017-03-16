@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 
     // Public Variables
-    public bool socketConnected;
+    public bool socketConnected, usernameInput;
     public string myUsername;
     public string questObj;
     public string bossType;
@@ -40,11 +40,18 @@ public class GameManager : MonoBehaviour {
 
     public void Start()
     {
+        // username has not been input
+        usernameInput = false;
+
         socket = GetComponent<SocketIOComponent>();
 
-        //socket.On("open", TestOpen);
-        socket.On("open", (SocketIOEvent e) =>
-        {
+        socket.On("open", (SocketIOEvent e) => {
+            if (usernameInput)
+            {
+                JSONObject data = new JSONObject(JSONObject.Type.STRING);
+                data.str = myUsername;
+                socket.Emit("add user", data);
+            }
             socketConnected = true;
         });
         socket.On("error", TestError);

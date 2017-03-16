@@ -19,9 +19,10 @@ public class LoginManager : MonoBehaviour {
         if (username != "")
         {
             GameManager.instance.myUsername = username;
-            JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
-            data.AddField("username", username);
+            JSONObject data = new JSONObject(JSONObject.Type.STRING);
+            data.str = username;
             GameManager.socket.Emit("add user", data);
+            GameManager.instance.usernameInput = true;
         }
     }
 }
