@@ -17,6 +17,13 @@ public class FightManager : MonoBehaviour {
     void Start () {
         player = GetComponent<Player>();
         Invoke("SpawnEnemy", 1.5f);
+
+        // Uncomment to test animations
+        //GameObject enemy = (GameObject)Instantiate(LianHwa, transform);
+        //enemy.GetComponent<Enemy>().FightManager = this;
+        //enemy.GetComponent<Enemy>().player = player;
+        //enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
+        //enemy.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
     }
 
     public void UpdateGold()
