@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour {
     // References to other scripts
     private LoginManager loginManager;
     private SoloManager soloManager;
+    private QuestManager questManager;
     private Enemy enemy;
 
     //Awake is always called before any Start functions
@@ -45,7 +46,8 @@ public class GameManager : MonoBehaviour {
 
         socket = GetComponent<SocketIOComponent>();
 
-        socket.On("open", (SocketIOEvent e) => {
+        socket.On("open", (SocketIOEvent e) =>
+        {
             if (usernameInput)
             {
                 JSONObject data = new JSONObject(JSONObject.Type.STRING);
@@ -84,12 +86,27 @@ public class GameManager : MonoBehaviour {
             // START WALKING
             //InvokeRepeating("SendCoordinates", 0, PING_FREQUENCY);
         });
+        socket.On("arrive data", (SocketIOEvent e) => {
+            //print(e.data.list[0].str + ": Connected - " + e.data.list[1].b + ". Arrived - " + e.data.list[2].b);
+            //print(e.data.list[3].str + ": Connected - " + e.data.list[4].b + ". Arrived - " + e.data.list[5].b);
+            // If the scene has changed, do nothing
+            if (SceneManager.GetActiveScene().name != "Quest") return;
+
+            if (questManager == null)
+                questManager = GameObject.Find("Main Camera").GetComponent<QuestManager>();
+
+            questManager.UpdateArriveUI(e.data.list[0].str, e.data.list[1].b, e.data.list[2].b, e.data.list[3].str, e.data.list[4].b, e.data.list[5].b);
+        });
         socket.On("party on obj", (SocketIOEvent e) => {
             CancelInvoke();
+            SceneManager.LoadScene("Prep");
+            socket.Emit("transition prep");
+        });
+        socket.On("spawn boss", (SocketIOEvent e) => {
             SceneManager.LoadScene("Fight");
 
             bossType = e.data.list[0].str;
-            bossHealth = (int) e.data.list[1].n;
+            bossHealth = (int)e.data.list[1].n;
             socket.Emit("transition fight");
         });
         socket.On("boss hit", (SocketIOEvent e) => {

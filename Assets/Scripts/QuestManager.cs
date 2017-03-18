@@ -24,7 +24,8 @@ public class QuestManager : MonoBehaviour {
     public bool DebugCoords;
 
     [SerializeField]
-    private UnityEngine.UI.Text textBox1, textBox2;
+    private Text textBox1, textBox2;
+    public Text user1, user1info, user2, user2info;
     public GameObject playerActual, forceArriveButton, objectiveMarker;
 
     private float lastLatitude = 0;
@@ -93,7 +94,7 @@ public class QuestManager : MonoBehaviour {
             objectiveLocation = GameManager.instance.questObj;
             textBox1.text = "OBJ: " + objectiveLocation;
             // Send my coordinates
-            InvokeRepeating("SendArrived", 0, GameManager.instance.PING_FREQUENCY);
+            InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
         }
         else
         {
@@ -161,7 +162,7 @@ public class QuestManager : MonoBehaviour {
         });
     }
 
-    private void SendArrived()
+    private void HasArrived()
     {
         JSONObject data = new JSONObject(JSONObject.Type.BOOL);
         data.b = hasArrived || forceArrived;
@@ -189,7 +190,6 @@ public class QuestManager : MonoBehaviour {
             textBox2.text = location;
             if (location.StartsWith(objectiveLocation))
             {
-                // TODO: UI SHOW ARRIVED, NEEDS OTHER PLAYER USERNAME
                 print("ARRIVED AT " + location);
                 hasArrived = true;
             } else
@@ -246,5 +246,20 @@ public class QuestManager : MonoBehaviour {
         }
         //return "Not found";
         return closest.Value;
+    }
+
+    public void UpdateArriveUI(string s1, bool b2, bool b3, string s4, bool b5, bool b6) {
+        user1.text = s1 + ":";
+        user2.text = s4 + ":";
+
+        string connected1, connected2;
+        string arrived1, arrived2;
+        connected1 = b2 ? "<color=green>Connected</color>" : "<color=red>Disconnected</color>";
+        connected2 = b5 ? "<color=green>Connected</color>" : "<color=red>Disconnected</color>";
+        arrived1 = b3 ? "<color=green>Arrived</color>" : "<color=red>Not yet</color>";
+        arrived2 = b6 ? "<color=green>Arrived</color>" : "<color=red>Not yet</color>";
+
+        user1info.text = connected1 + "|" + arrived1;
+        user2info.text = connected2 + "|" + arrived2;
     }
 }
