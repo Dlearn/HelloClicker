@@ -19,7 +19,8 @@ public class FightManager : MonoBehaviour {
         Invoke("SpawnEnemy", 1.0f);
 
         // Uncomment to test animations
-        //GameObject enemy = (GameObject)Instantiate(LianHwa, transform);
+        //GameObject enemy = Instantiate(RedKnight, transform);
+        //enemy.GetComponent<Enemy>().damageDelay = 1.05f;
         //enemy.GetComponent<Enemy>().FightManager = this;
         //enemy.GetComponent<Enemy>().player = player;
         //enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
@@ -40,11 +41,20 @@ public class FightManager : MonoBehaviour {
     {
         GameObject enemy;
         if (GameManager.instance.bossType == "RedKnight")
+        { 
             enemy = (GameObject) Instantiate(RedKnight, transform);
+            enemy.GetComponent<Enemy>().damageDelay = 1.05f;
+        }
         else if (GameManager.instance.bossType == "Smail")
+        { 
             enemy = (GameObject) Instantiate(Smail, transform);
+            enemy.GetComponent<Enemy>().damageDelay = 1.0f;
+        }
         else // "LianHwa"
+        { 
             enemy = (GameObject) Instantiate(LianHwa, transform);
+            enemy.GetComponent<Enemy>().damageDelay = .85f;
+        }
 
         enemy.GetComponent<Enemy>().FightManager = this;
         enemy.GetComponent<Enemy>().player = player;

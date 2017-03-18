@@ -28,8 +28,8 @@ public class Enemy : MonoBehaviour {
     // Enemy Variables
     private int enemyCurrentHealth;
     private int maxHealth;
+    public float damageDelay;
     private int goldBounty = 10;
-    private float attackPeriod = 5.0f;
     
     void Awake()
     {
@@ -46,7 +46,8 @@ public class Enemy : MonoBehaviour {
         enemyHealth.value = maxHealth;
         EnemyHealthText.text = maxHealth + " / " + maxHealth;
 
-        InvokeRepeating("AttackTrigger", 1.0f, attackPeriod);
+        int attackPeriod = Random.Range(5,7);
+        InvokeRepeating("AttackTrigger", 1, attackPeriod);
     }
 
     private void OnMouseDown() // Player attacks enemy
@@ -98,14 +99,14 @@ public class Enemy : MonoBehaviour {
     private void AttackTrigger()
     {
         anim.SetTrigger("Attack");
-        //print("Start Attack");
-        Invoke("DamagePlayer", 1.25f); 
+        Invoke("DamagePlayer", damageDelay); 
     }
 
     private void DamagePlayer()
     {
         player.enemy = this;
-        player.GetHitXDamage(15);
+        int damage = Random.Range(12, 18);
+        player.GetHitXDamage(damage);
     }
 
     public void Death()
