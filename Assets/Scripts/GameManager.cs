@@ -56,8 +56,16 @@ public class GameManager : MonoBehaviour {
             }
             socketConnected = true;
         });
-        socket.On("error", TestError);
-        socket.On("close", TestClose);
+        //socket.On("error", TestError);
+        socket.On("close", (SocketIOEvent e) => {
+            if (!usernameInput) return;
+            if (SceneManager.GetActiveScene().name != "Quest") return;
+
+            if (questManager == null)
+                questManager = GameObject.Find("Main Camera").GetComponent<QuestManager>();
+
+            questManager.UpdateArriveUI(e.data.list[0].str, e.data.list[1].b, e.data.list[2].b, e.data.list[3].str, e.data.list[4].b, e.data.list[5].b);
+        });
 
         socket.On("login", (SocketIOEvent e) => {
             SceneManager.LoadScene("Solo");
@@ -87,8 +95,6 @@ public class GameManager : MonoBehaviour {
             //InvokeRepeating("SendCoordinates", 0, PING_FREQUENCY);
         });
         socket.On("arrive data", (SocketIOEvent e) => {
-            //print(e.data.list[0].str + ": Connected - " + e.data.list[1].b + ". Arrived - " + e.data.list[2].b);
-            //print(e.data.list[3].str + ": Connected - " + e.data.list[4].b + ". Arrived - " + e.data.list[5].b);
             // If the scene has changed, do nothing
             if (SceneManager.GetActiveScene().name != "Quest") return;
 

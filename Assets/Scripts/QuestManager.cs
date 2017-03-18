@@ -24,7 +24,7 @@ public class QuestManager : MonoBehaviour {
     public bool DebugCoords;
 
     [SerializeField]
-    private Text textBox1, textBox2;
+    private Text objLoc, curLoc;
     public Text user1, user1info, user2, user2info;
     public GameObject playerActual, forceArriveButton, objectiveMarker;
 
@@ -92,14 +92,15 @@ public class QuestManager : MonoBehaviour {
         if (!DebugCoords)
         {
             objectiveLocation = GameManager.instance.questObj;
-            textBox1.text = "OBJ: " + objectiveLocation;
+            objLoc.text = "Objective:\n" + objectiveLocation;
+            curLoc.text = "Current:\n<color=blue>Initializing GPS</color>";
             // Send my coordinates
-            InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
+            //InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
         }
         else
         {
-            objectiveLocation = "Cafe Agora";
-            textBox1.text = "OBJ: " + objectiveLocation;
+            objectiveLocation = "Library";
+            objLoc.text = "Objective:\n" + objectiveLocation;
         }
 
         Vector2 vector = new Vector2(0f, 0f);
@@ -150,13 +151,12 @@ public class QuestManager : MonoBehaviour {
                 }
             } else
             {
-                textBox2.text = "GPS not available";
+                curLoc.text = "Current:\n<color=red>GPS Unavailable</color>";
             }
         }
         Button btn = forceArriveButton.GetComponent<Button>();
         btn.onClick.AddListener(() =>
         {
-            print("Force Arrive!");
             forceArrived = true;
             forceArriveButton.SetActive(false);
         });
@@ -187,16 +187,15 @@ public class QuestManager : MonoBehaviour {
             //textBox1.text = gpsString2;
 
             string location = where(new Vector2(latitude, longitude));
-            textBox2.text = location;
+            curLoc.text = "Current:\n" + location.Remove(location.Length-1);
             if (location.StartsWith(objectiveLocation))
             {
-                print("ARRIVED AT " + location);
                 hasArrived = true;
+                HasArrived();
             } else
             {
-                // TODO: UI SHOW NOT ARRIVED
-                print("Not arrived, " + location + " does not start with " + objectiveLocation);
                 hasArrived = false;
+                HasArrived();
             }
 
             Vector2 vector = new Vector2(0f, 0f);
@@ -212,12 +211,11 @@ public class QuestManager : MonoBehaviour {
                 playerActual.transform.position = new Vector3(x, y, 0);
                 if (x < MIN_X || x > MAX_X || y < MIN_Y || y > MAX_Y)
                 {
-                    textBox2.text = "Out of bounds.";
+                    curLoc.text = "Current:\nOut of Bounds";
                     print("OOB: " + gpsString1);
                 } else
                 {
-                    textBox2.text = "EXCEPTION: No string??";
-                    print("No String: " + gpsString1);
+                    curLoc.text = "Current:\nUnlisted Location";
                 }
             }
         }
@@ -248,6 +246,12 @@ public class QuestManager : MonoBehaviour {
         return closest.Value;
     }
 
+    public void Disconnected()
+    {
+        user1info.text = "<color=red>Disconnected</color>";
+        user2info.text = "";
+    }
+
     public void UpdateArriveUI(string s1, bool b2, bool b3, string s4, bool b5, bool b6) {
         user1.text = s1 + ":";
         user2.text = s4 + ":";
@@ -259,7 +263,14 @@ public class QuestManager : MonoBehaviour {
         arrived1 = b3 ? "<color=green>Arrived</color>" : "<color=red>Not yet</color>";
         arrived2 = b6 ? "<color=green>Arrived</color>" : "<color=red>Not yet</color>";
 
-        user1info.text = connected1 + "|" + arrived1;
-        user2info.text = connected2 + "|" + arrived2;
+        if (GameManager.instance.myUsername == s1)
+        {
+            user1info.text = connected1 + "|" + arrived1;
+            user2info.text = connected2 + "|" + arrived2;
+        } else
+        {
+            user1info.text = connected1 + "|" + arrived1;
+            user2info.text = connected2 + "|" + arrived2;
+        }
     }
 }

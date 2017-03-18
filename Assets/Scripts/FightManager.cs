@@ -16,7 +16,7 @@ public class FightManager : MonoBehaviour {
     
     void Start () {
         player = GetComponent<Player>();
-        Invoke("SpawnEnemy", 1.5f);
+        Invoke("SpawnEnemy", 1.0f);
 
         // Uncomment to test animations
         //GameObject enemy = (GameObject)Instantiate(LianHwa, transform);
