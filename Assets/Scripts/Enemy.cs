@@ -105,7 +105,7 @@ public class Enemy : MonoBehaviour {
     private void DamagePlayer()
     {
         player.enemy = this;
-        int damage = Random.Range(12, 18);
+        int damage = Random.Range(28, 35);
         player.GetHitXDamage(damage);
     }
 

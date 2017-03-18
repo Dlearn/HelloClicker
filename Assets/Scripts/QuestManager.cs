@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class QuestManager : MonoBehaviour {
 
-    // CONSTANTS ABOUT GPS STUFF
+    // GPS CONSTANTS
     // Define 103.7717,1.3054 = -2.31,-4.45
     // Define 103.7729,1.30865 = 2.22, 4.78
     const float MIN_LONG = 103.7717f;
@@ -20,8 +20,7 @@ public class QuestManager : MonoBehaviour {
     const float SCALE_X = (MAX_X - MIN_X) / (MAX_LONG - MIN_LONG); 
     const float SCALE_Y = (MAX_Y - MIN_Y) / (MAX_LAT - MIN_LAT);
 
-    public bool FakingLocation;
-    public bool DebugCoords;
+    public bool FakingLocation, DebugCoords;
 
     [SerializeField]
     private Text objLoc, curLoc;
@@ -40,51 +39,62 @@ public class QuestManager : MonoBehaviour {
     {
         // Fake GPS to real location
         locs = new Dictionary<Vector2, string>();
-        locs.Add(new Vector2(1.3077f, 103.7724f), "Cendana Staff Area");
-        locs.Add(new Vector2(1.3082f, 103.7726f), "MCS Classroom");
-        locs.Add(new Vector2(1.3080f, 103.7725f), "MCS Classroom");
-        locs.Add(new Vector2(1.3081f, 103.7723f), "Cendana Dining Hall");
-        locs.Add(new Vector2(1.3082f, 103.7723f), "Cendana Dining Hall");
-        //locs.Add(new Vector2(1.3081f, 103.7725f), "Cendana Dining Hall");
-        locs.Add(new Vector2(1.3088f, 103.7714f), "Dylan's Room");
-        locs.Add(new Vector2(1.3085f, 103.7715f), "Dylan's Room");
-        locs.Add(new Vector2(1.3078f, 103.7723f), "Dylan's Room"); // Latest
+        locs.Add(new Vector2(1.3058f, 103.7723f), "Saga1");
+        locs.Add(new Vector2(1.3058f, 103.7721f), "Saga2");
+        locs.Add(new Vector2(1.3056f, 103.7723f), "Saga3");
+
+        locs.Add(new Vector2(1.3061f, 103.7724f), "Dean of Faculty Office1");
+
+        locs.Add(new Vector2(1.3064f, 103.7722f), "Elm1");
+        locs.Add(new Vector2(1.3062f, 103.7722f), "Elm2");
+
+        locs.Add(new Vector2(1.3068f, 103.7725f), "Library1");
+        locs.Add(new Vector2(1.3069f, 103.7726f), "Library2");
+        locs.Add(new Vector2(1.3071f, 103.7725f), "Library3");
 
         locs.Add(new Vector2(1.3076f, 103.7725f), "MPH1");
         locs.Add(new Vector2(1.3075f, 103.7725f), "MPH2");
         locs.Add(new Vector2(1.3073f, 103.7726f), "MPH3");
 
-        locs.Add(new Vector2(1.3068f, 103.7725f), "Library1");
-        locs.Add(new Vector2(1.3069f, 103.7726f), "Library2"); // Computer Lab
-        locs.Add(new Vector2(1.3071f, 103.7725f), "Library3");
-        //locs.Add(new Vector2(1.3072f, 103.7725f), "Library");
+        locs.Add(new Vector2(1.3077f, 103.7724f), "Cendana Staff Area");
+        locs.Add(new Vector2(1.3082f, 103.7726f), "MCS Classroom");
+        locs.Add(new Vector2(1.3080f, 103.7725f), "MCS Classroom");
+        locs.Add(new Vector2(1.3081f, 103.7723f), "Cendana1");
+        locs.Add(new Vector2(1.3082f, 103.7723f), "Cendana2");
 
-        locs.Add(new Vector2(1.3064f, 103.7722f), "Elm Courtyard1");
-        locs.Add(new Vector2(1.3062f, 103.7722f), "Elm Courtyard2");
-        locs.Add(new Vector2(1.3061f, 103.7724f), "Between Elm and Saga");
-        locs.Add(new Vector2(1.3058f, 103.7723f), "Saga Courtyard1");
-        locs.Add(new Vector2(1.3058f, 103.7721f), "Saga Courtyard2");
-        locs.Add(new Vector2(1.3056f, 103.7723f), "Saga Courtyard3");
+        locs.Add(new Vector2(1.3078f, 103.7723f), "Dylan's Room"); // Latest         
 
-        // Real location to real GPS
+        // Real location to onscreen GPS
         coords = new Dictionary<string, Vector2>();
-        coords.Add("MCS Classroom", new Vector2(103.7728f, 1.308076f));
-        coords.Add("Cendana Dining Hall", new Vector2(103.7724f, 1.3084f));
-        coords.Add("Dylan's Room", new Vector2(103.7727f, 1.3080f));
-        coords.Add("MPH", new Vector2(103.7728f, 1.3076f));
-        coords.Add("MPH1", new Vector2(103.77285f, 1.3077f));
-        coords.Add("MPH2", new Vector2(103.7728f, 1.30765f));
-        coords.Add("MPH3", new Vector2(103.7728f, 1.30765f));
+        coords.Add("Saga", new Vector2(103.7724f, 1.3059f));
+        coords.Add("Saga1", new Vector2(103.7724f, 1.3059f));
+        coords.Add("Saga2", new Vector2(103.7723f, 1.3058f));
+        coords.Add("Saga3", new Vector2(103.7723f, 1.3056f));
 
+        coords.Add("Dean of Faculty Office", new Vector2(103.7725f, 1.3061f));
+        coords.Add("Dean of Faculty Office1", new Vector2(103.7725f, 1.3061f));
+
+        coords.Add("Elm", new Vector2(103.7724f, 1.3066f));
+        coords.Add("Elm1", new Vector2(103.7726f, 1.3065f));
+        coords.Add("Elm2", new Vector2(103.7725f, 1.3063f));
+
+        coords.Add("Library", new Vector2(103.77275f, 1.30715f));
         coords.Add("Library1", new Vector2(103.7728f, 1.30717f));
         coords.Add("Library2", new Vector2(103.77275f, 1.30715f));
         coords.Add("Library3", new Vector2(103.77275f, 1.30713f));
-        coords.Add("Elm Courtyard1", new Vector2(103.7726f, 1.3065f));
-        coords.Add("Elm Courtyard2", new Vector2(103.7725f, 1.3063f));
-        coords.Add("Between Elm and Saga", new Vector2(103.7725f, 1.3061f));
-        coords.Add("Saga Courtyard1", new Vector2(103.7724f, 1.3059f));
-        coords.Add("Saga Courtyard2", new Vector2(103.7723f, 1.3058f));
-        coords.Add("Saga Courtyard3", new Vector2(103.7723f, 1.3056f));
+
+        coords.Add("MPH", new Vector2(103.7728f, 1.30765f));
+        coords.Add("MPH1", new Vector2(103.77285f, 1.3077f));
+        coords.Add("MPH2", new Vector2(103.7728f, 1.30765f));
+        coords.Add("MPH3", new Vector2(103.7727f, 1.30766f));
+
+        coords.Add("Cendana", new Vector2(103.7725f, 1.3080f));
+        coords.Add("Cendana1", new Vector2(103.7730f, 1.3080f));
+        coords.Add("Cendana2", new Vector2(103.7730f, 1.3080f));
+
+        coords.Add("MCS Classroom", new Vector2(103.7728f, 1.308076f));
+        coords.Add("Dylan's Room", new Vector2(103.7727f, 1.3080f));
+        
 
         hasArrived = false;
         float longitude, latitude, x, y;
@@ -95,7 +105,7 @@ public class QuestManager : MonoBehaviour {
             objLoc.text = "Objective:\n" + objectiveLocation;
             curLoc.text = "Current:\n<color=blue>Initializing GPS</color>";
             // Send my coordinates
-            //InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
+            InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
         }
         else
         {
@@ -134,7 +144,6 @@ public class QuestManager : MonoBehaviour {
             Input.compass.enabled = true;
             int wait = 1000; // Per default 
 
-            // Checks if the GPS is enabled by the user (-> Allow location)
             if (Input.location.isEnabledByUser)
             {
                 while (Input.location.status == LocationServiceStatus.Initializing && wait > 0)
