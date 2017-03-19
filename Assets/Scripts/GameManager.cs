@@ -149,13 +149,6 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void invitePlayer()
-    {
-        JSONObject invitee = new JSONObject(JSONObject.Type.OBJECT);
-        invitee.AddField("username", "user0");
-        socket.Emit("invite", invitee);
-    }
-
     void SendCoordinates()
     {
         int jitter_x = Random.Range(0, 2); // 0,1
