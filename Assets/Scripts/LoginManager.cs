@@ -22,7 +22,6 @@ public class LoginManager : MonoBehaviour {
         StartCoroutine(FadeToWithChild(UsernameInput, 1, 1));
         StartCoroutine(FadeToWithChild(SubmitUsername, 1, 1));
         StartCoroutine(FadeTo(Content, 0.5f, 1));
-        StartCoroutine(FadeTo(Logo, 1, 1));
     }
 
     IEnumerator FadeTo(GameObject go, float aValue, float aTime)

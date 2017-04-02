@@ -29,7 +29,7 @@ public class SoloManager : MonoBehaviour {
             if (playerName == GameManager.instance.myUsername) continue; // Can't invite yourself
 
             GameObject newInviteButton = Instantiate(InviteButton);
-            newInviteButton.GetComponentInChildren<Text>().text = "Invite " + playerName;
+            newInviteButton.GetComponentInChildren<Text>().text = playerName;
             newInviteButton.transform.SetParent(InviteList.transform, false);
             Button btn = newInviteButton.GetComponent<Button>();
             btn.onClick.AddListener(() =>

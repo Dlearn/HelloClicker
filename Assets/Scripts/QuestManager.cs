@@ -111,6 +111,8 @@ public class QuestManager : MonoBehaviour {
         {
             objectiveLocation = "Library";
             objLoc.text = "Objective:\n" + objectiveLocation;
+            curLoc.text = "Current:\nCendana";
+            InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
         }
 
         Vector2 vector = new Vector2(0f, 0f);
@@ -167,6 +169,7 @@ public class QuestManager : MonoBehaviour {
         btn.onClick.AddListener(() =>
         {
             forceArrived = true;
+            HasArrived();
             forceArriveButton.SetActive(false);
         });
     }
