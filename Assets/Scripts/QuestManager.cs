@@ -51,6 +51,7 @@ public class QuestManager : MonoBehaviour {
         locs.Add(new Vector2(1.3068f, 103.7725f), "Library1");
         locs.Add(new Vector2(1.3069f, 103.7726f), "Library2");
         locs.Add(new Vector2(1.3071f, 103.7725f), "Library3");
+        locs.Add(new Vector2(1.3071f, 103.7728f), "Library4");
 
         locs.Add(new Vector2(1.3076f, 103.7725f), "MPH1");
         locs.Add(new Vector2(1.3075f, 103.7725f), "MPH2");
@@ -228,6 +229,7 @@ public class QuestManager : MonoBehaviour {
                 } else
                 {
                     curLoc.text = "Current:\nUnlisted Location";
+                    print("UNL: " + gpsString1);
                 }
             }
         }
