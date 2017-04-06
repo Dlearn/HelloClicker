@@ -43,8 +43,6 @@ public class QuestManager : MonoBehaviour {
         locs.Add(new Vector2(1.3058f, 103.7721f), "Saga2");
         locs.Add(new Vector2(1.3056f, 103.7723f), "Saga3");
 
-        locs.Add(new Vector2(1.3061f, 103.7724f), "Dean of Faculty Office1");
-
         locs.Add(new Vector2(1.3064f, 103.7722f), "Elm1");
         locs.Add(new Vector2(1.3062f, 103.7722f), "Elm2");
 

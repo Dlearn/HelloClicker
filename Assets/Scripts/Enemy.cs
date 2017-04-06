@@ -41,12 +41,13 @@ public class Enemy : MonoBehaviour {
     {
         enemyHealth.gameObject.SetActive(true);
         maxHealth = GameManager.instance.bossHealth;
+        //maxHealth = 100;
         enemyHealth.maxValue = maxHealth;
         enemyCurrentHealth = maxHealth;
         enemyHealth.value = maxHealth;
         EnemyHealthText.text = maxHealth + " / " + maxHealth;
 
-        int attackPeriod = Random.Range(5,7);
+        int attackPeriod = Random.Range(4,6);
         InvokeRepeating("AttackTrigger", 1, attackPeriod);
     }
 
