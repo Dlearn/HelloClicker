@@ -34,11 +34,16 @@ public class Player : MonoBehaviour {
     public float flashSpeed = 1f;
     public Color flashColor = new Color(1f, 0f, 0f, .1f);
 
+    // Announcement UI
+    private GameObject announcementPanel;
+
     void Start () {
         // Initialize from player stats
         attackPerClick = 1;
         currentGold = 0;
         damaged = false;
+
+        announcementPanel = GameObject.Find("AnnouncementPanel");
     }
 
     private void Awake()
@@ -78,11 +83,19 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void Victory()
+    {
+        // Display Victory
+        announcementPanel.GetComponent<Image>().color = new Color(1, 1, 1, 210.0f / 225f);
+        announcementPanel.GetComponentInChildren<Text>().text = "VICTORY";
+    }
+
     void Death()
     {
         // TODO: Decide what happens when player dies
         CancelInvoke();
-        GameObject.Find("AnnouncementText").GetComponent<Text>().text = "Game Over";
+        announcementPanel.GetComponent<Image>().color = new Color(1, 1, 1, 210.0f / 225f);
+        announcementPanel.GetComponentInChildren<Text>().text = "Game Over";
 
         // Change scene in 3 seconds
         Invoke("LoadSoloScene", 3);

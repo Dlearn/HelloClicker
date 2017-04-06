@@ -122,8 +122,7 @@ public class Enemy : MonoBehaviour {
         enemyHealth.gameObject.SetActive(false);
         gameObject.SetActive(false);
 
-        // Display Victory
-        GameObject.Find("AnnouncementText").GetComponent<Text>().text = "VICTORY";
+        player.Victory();
 
         // Spawn new enemy
         //FightManager.SpawnEnemyInXSeconds(2f);   
