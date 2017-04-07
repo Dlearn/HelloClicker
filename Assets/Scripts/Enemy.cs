@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour {
 
     // Enemy Variables
     private int enemyCurrentHealth;
-    private int maxHealth;
+    public int maxHealth;
     public float damageDelay;
     private int goldBounty = 10;
     
@@ -40,7 +40,6 @@ public class Enemy : MonoBehaviour {
     void Start()
     {
         enemyHealth.gameObject.SetActive(true);
-        maxHealth = GameManager.instance.bossHealth;
         //maxHealth = 100;
         enemyHealth.maxValue = maxHealth;
         enemyCurrentHealth = maxHealth;
@@ -53,6 +52,9 @@ public class Enemy : MonoBehaviour {
 
     private void OnMouseDown() // Player attacks enemy
     {
+        // Can't attack if you're dead.
+        if (!player.isAlive) return;
+
         // Play Animation
         if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Idle"))
             anim.SetTrigger("Hurt");
@@ -80,7 +82,7 @@ public class Enemy : MonoBehaviour {
         }
 
         JSONObject data = new JSONObject(JSONObject.Type.OBJECT);
-        data.AddField("damage", Random.Range(3,7));
+        data.AddField("damage", Random.Range(4,8));
         GameManager.socket.Emit("attack", data);
     }
 
@@ -115,21 +117,14 @@ public class Enemy : MonoBehaviour {
         // Stop attack trigger
         CancelInvoke();
         
-        // Change scene in 3 seconds
-        Invoke("LoadSoloScene", 3);
-
         // Make GameObject Inactive
         enemyHealth.gameObject.SetActive(false);
         gameObject.SetActive(false);
-
-        player.Victory();
-
-        // Spawn new enemy
-        //FightManager.SpawnEnemyInXSeconds(2f);   
+        Destroy(gameObject);
 
         // TODO: Get gold! GetGold()
-        player.currentGold += goldBounty;
-        FightManager.UpdateGold();
+        //player.currentGold += goldBounty;
+        //FightManager.UpdateGold();
     }
 
     void LoadSoloScene()

@@ -16,7 +16,7 @@ public class FightManager : MonoBehaviour {
     
     void Start () {
         player = GetComponent<Player>();
-        Invoke("SpawnEnemy", 1.0f);
+        //Invoke("SpawnEnemy", 1.0f);
 
         // Uncomment to test animations
         //GameObject enemy = Instantiate(Smail, transform);
@@ -25,12 +25,13 @@ public class FightManager : MonoBehaviour {
         //enemy.GetComponent<Enemy>().player = player;
         //enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
         //enemy.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
+        //enemy.GetComponent<Enemy>().maxHealth = 100;
     }
 
-    public void UpdateGold()
-    {
-        goldDisplay.text = "Gold: " + player.currentGold;
-    }
+    //public void UpdateGold()
+    //{
+    //    goldDisplay.text = "Gold: " + player.currentGold;
+    //}
 
     public void SpawnEnemyInXSeconds(float x)
     {
@@ -60,5 +61,6 @@ public class FightManager : MonoBehaviour {
         enemy.GetComponent<Enemy>().player = player;
         enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
         enemy.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
+        enemy.GetComponent<Enemy>().maxHealth = GameManager.instance.bossHealth;
     }
 }

@@ -22,7 +22,9 @@ public class GameManager : MonoBehaviour {
     private LoginManager loginManager;
     private SoloManager soloManager;
     private QuestManager questManager;
+    private FightManager fightManager;
     private Enemy enemy;
+    private Player player;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -108,26 +110,42 @@ public class GameManager : MonoBehaviour {
             SceneManager.LoadScene("Prep");
             socket.Emit("transition prep");
         });
-        socket.On("spawn boss", (SocketIOEvent e) => {
+        socket.On("party is ready", (SocketIOEvent e) => {
             SceneManager.LoadScene("Fight");
-
+            socket.Emit("transition fight");
+        });
+        socket.On("spawn boss", (SocketIOEvent e) => {
             bossType = e.data.list[0].str;
             bossHealth = (int)e.data.list[1].n;
-            socket.Emit("transition fight");
+
+            // If the scene has changed, do nothing
+            if (SceneManager.GetActiveScene().name != "Fight") Debug.LogError("Not yet loaded Fight");
+
+            // If we haven't found FightManager, find it now.
+            if (fightManager == null)
+                fightManager = GameObject.Find("Main Camera").GetComponent<FightManager>();
+
+            fightManager.SpawnEnemyInXSeconds(1);
         });
         socket.On("boss hit", (SocketIOEvent e) => {
             // If the scene has changed, do nothing
             if (SceneManager.GetActiveScene().name != "Fight") return;
 
-            // If we haven't found SoloManager, find it now.
+            // If we haven't found Enemy, find it now.
             if (enemy == null)
                 enemy = GameObject.FindGameObjectWithTag("Monster").GetComponent<Enemy>();
 
             int remainingHealth = (int)e.data.list[0].n;
             enemy.UpdateHealth(remainingHealth);
         });
-        socket.On("boss defeated", (SocketIOEvent) => {
+        socket.On("quest completed", (SocketIOEvent) => {
             socket.Emit("back transition solo");
+
+            // If we haven't found FightManager, find it now.
+            if (player == null)
+                player = GameObject.Find("Main Camera").GetComponent<Player>();
+
+            player.Victory();
         });
     }
 
@@ -147,17 +165,6 @@ public class GameManager : MonoBehaviour {
 
             loginManager.MakeLoginVisible();
         }
-    }
-
-    void SendCoordinates()
-    {
-        int jitter_x = Random.Range(0, 2); // 0,1
-        int jitter_y = Random.Range(0, 2); // 0,1
-        
-        JSONObject coord = new JSONObject(JSONObject.Type.OBJECT);
-        coord.AddField("x", 50 + jitter_x);
-        coord.AddField("y", 50 + jitter_y);
-        socket.Emit("cur coord", coord);
     }
 
     public void Attack()

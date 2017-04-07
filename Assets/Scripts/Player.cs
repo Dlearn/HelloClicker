@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
     public Image shield;
 
     // Player Stats
+    public bool isAlive;
     public int _maxHealth = 100;
     public int currentHealth = 100;
     public int attackPerClick;
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour {
     private GameObject announcementPanel;
 
     void Start () {
+        isAlive = true;
         // Initialize from player stats
         attackPerClick = 1;
         currentGold = 0;
@@ -88,10 +90,14 @@ public class Player : MonoBehaviour {
         // Display Victory
         announcementPanel.GetComponent<Image>().color = new Color(1, 1, 1, 210.0f / 225f);
         announcementPanel.GetComponentInChildren<Text>().text = "VICTORY";
+
+        // Change scene in 3 seconds
+        Invoke("LoadSoloScene", 3);
     }
 
     void Death()
     {
+        isAlive = false;
         // TODO: Decide what happens when player dies
         CancelInvoke();
         announcementPanel.GetComponent<Image>().color = new Color(1, 1, 1, 210.0f / 225f);
