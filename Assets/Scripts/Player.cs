@@ -74,8 +74,9 @@ public class Player : MonoBehaviour {
         announcementPanel.GetComponent<Image>().color = new Color(1, 1, 1, 210.0f / 225f);
         announcementPanel.GetComponentInChildren<Text>().text = "VICTORY";
 
-        // Change scene in 3 seconds
-        Invoke("LoadSoloScene", 3);
+        SoundManager.instance.PlayWinMusic();
+        // Change scene in 10 seconds
+        Invoke("LoadSoloScene", 9.5f);
     }
 
     void Death()
@@ -88,8 +89,8 @@ public class Player : MonoBehaviour {
 
         SoundManager.instance.PlayLoseMusic();
 
-        // Change scene in 3 seconds
-        Invoke("LoadSoloScene", 3);
+        // Change scene in 6 seconds
+        Invoke("LoadSoloScene", 6);
     }
 
     void LoadSoloScene()

@@ -40,6 +40,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayAmbientMusic()
     {
+        if (musicSource.clip == AmbientMusic) return;
         musicSource.Stop();
         musicSource.clip = AmbientMusic;
         musicSource.Play();

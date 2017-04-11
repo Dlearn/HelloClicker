@@ -39,7 +39,7 @@ public class FightManager : MonoBehaviour {
         GameObject enemy;
         if (GameManager.instance.bossType == "RedKnight")
         {
-            enemy = Instantiate(RedKnight, new Vector3(.7f, .8f, 1), Quaternion.identity);
+            enemy = Instantiate(RedKnight, new Vector3(.7f, 1, 1), Quaternion.identity);
             enemy.GetComponent<Enemy>().damageDelay = 1.05f;
         }
         else if (GameManager.instance.bossType == "Smail")

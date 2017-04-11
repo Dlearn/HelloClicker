@@ -147,7 +147,6 @@ public class GameManager : MonoBehaviour {
                 player = GameObject.Find("Main Camera").GetComponent<Player>();
 
             player.Victory();
-            SoundManager.instance.PlayWinMusic();
         });
     }
 

@@ -8,6 +8,8 @@ public class SoloManager : MonoBehaviour {
     private GameObject InviteListPanel, InviteList, InviteButton;
     void Start()
     {
+        SoundManager.instance.PlayAmbientMusic();
+
         // Query for who is online
         InvokeRepeating("LookingForParty", 0, GameManager.instance.PING_FREQUENCY);
     }
