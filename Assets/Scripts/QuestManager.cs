@@ -37,6 +37,10 @@ public class QuestManager : MonoBehaviour {
 
     void Start ()
     {
+        // Method to calculate "correct" GPS
+        //print((.51f + 3f) / SCALE_X + MIN_LONG);
+        //print((2.8f + 5f) / SCALE_Y + MIN_LAT);
+
         // Fake GPS to real location
         locs = new Dictionary<Vector2, string>();
         locs.Add(new Vector2(1.3058f, 103.7723f), "Saga1");
@@ -50,6 +54,10 @@ public class QuestManager : MonoBehaviour {
         locs.Add(new Vector2(1.3069f, 103.7726f), "Library2");
         locs.Add(new Vector2(1.3071f, 103.7725f), "Library3");
         locs.Add(new Vector2(1.3071f, 103.7728f), "Library4");
+
+        locs.Add(new Vector2(1.3066f, 103.7722f), "CR151");
+        locs.Add(new Vector2(1.3066f, 103.7721f), "CR152");
+        locs.Add(new Vector2(1.3072f, 103.7729f), "CR153");
 
         locs.Add(new Vector2(1.3076f, 103.7725f), "MPH1");
         locs.Add(new Vector2(1.3075f, 103.7725f), "MPH2");
@@ -82,14 +90,19 @@ public class QuestManager : MonoBehaviour {
         coords.Add("Library2", new Vector2(103.77275f, 1.30715f));
         coords.Add("Library3", new Vector2(103.77275f, 1.30713f));
 
+        coords.Add("CR15", new Vector2(103.7727f, 1.3068f));
+        coords.Add("CR151", new Vector2(103.7727f, 1.3068f));
+        coords.Add("CR152", new Vector2(103.7727f, 1.3068f));
+        coords.Add("CR153", new Vector2(103.7727f, 1.3068f));
+
         coords.Add("MPH", new Vector2(103.7728f, 1.30765f));
         coords.Add("MPH1", new Vector2(103.77285f, 1.3077f));
         coords.Add("MPH2", new Vector2(103.7728f, 1.30765f));
         coords.Add("MPH3", new Vector2(103.7727f, 1.30766f));
 
-        coords.Add("Cendana", new Vector2(103.7725f, 1.3080f));
-        coords.Add("Cendana1", new Vector2(103.7730f, 1.3080f));
-        coords.Add("Cendana2", new Vector2(103.7730f, 1.3080f));
+        coords.Add("Cendana", new Vector2(103.7726f, 1.3081f));
+        coords.Add("Cendana1", new Vector2(103.7726f, 1.3081f));
+        coords.Add("Cendana2", new Vector2(103.7726f, 1.3081f));
 
         coords.Add("MCS Classroom", new Vector2(103.7728f, 1.308076f));
         coords.Add("Dylan's Room", new Vector2(103.7727f, 1.3080f));
@@ -111,7 +124,7 @@ public class QuestManager : MonoBehaviour {
             objectiveLocation = "Library";
             objLoc.text = "Objective:\n" + objectiveLocation;
             curLoc.text = "Current:\nCendana";
-            InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
+            //InvokeRepeating("HasArrived", 0, GameManager.instance.PING_FREQUENCY);
         }
 
         Vector2 vector = new Vector2(0f, 0f);
@@ -126,9 +139,7 @@ public class QuestManager : MonoBehaviour {
 
         if (FakingLocation)
         {
-            // Method to calculate "correct" GPS
-            print((1.1f + 3f) / SCALE_X + MIN_LONG);
-            print((2.6f + 5f) / SCALE_Y + MIN_LAT);
+            
 
             // Method to check distances
             //print(Vector2.Distance(new Vector2(1.306181f, 103.7722f), new Vector2(1.308547f, 103.7715f)));

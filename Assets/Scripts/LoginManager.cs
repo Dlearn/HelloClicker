@@ -7,13 +7,6 @@ public class LoginManager : MonoBehaviour {
 
     [SerializeField]
     private GameObject UsernameInput, SubmitUsername, Content, Logo;
-    [SerializeField]
-    private AudioClip introMusic;
-
-    void Start()
-    {
-        SoundManager.instance.PlayMusic(introMusic);
-    }
 
     public void MakeLoginVisible()
     {

@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
     public bool socketConnected, usernameInput;
     public string myUsername;
     public string questObj;
+    public bool selectedMaceNotSword;
     public string bossType;
     public int bossHealth;
 
@@ -146,6 +147,7 @@ public class GameManager : MonoBehaviour {
                 player = GameObject.Find("Main Camera").GetComponent<Player>();
 
             player.Victory();
+            SoundManager.instance.PlayWinMusic();
         });
     }
 

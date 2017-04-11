@@ -5,33 +5,29 @@ using UnityEngine.UI;
 public class FightManager : MonoBehaviour {
 
     // Serialized variables
-    [SerializeField]
-    private GameObject RedKnight, Smail, LianHwa;
-    [SerializeField]
-    private UnityEngine.UI.Text goldDisplay, EnemyHealthText;
-    [SerializeField]
-    private Slider enemyHealth;
+    public GameObject RedKnight, Smail, LianHwa;
+    public GameObject SwipeManager;
+    public Text EnemyHealthText;
+    public Slider enemyHealth;
 
     private Player player;
     
     void Start () {
+        SoundManager.instance.PlayFightMusic();
+
         player = GetComponent<Player>();
-        //Invoke("SpawnEnemy", 1.0f);
 
         // Uncomment to test animations
-        //GameObject enemy = Instantiate(Smail, transform);
+        //GameObject enemy = Instantiate(RedKnight, new Vector3(.7f, .8f, 1), Quaternion.identity);
         //enemy.GetComponent<Enemy>().damageDelay = 1.05f;
         //enemy.GetComponent<Enemy>().FightManager = this;
         //enemy.GetComponent<Enemy>().player = player;
         //enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
         //enemy.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
         //enemy.GetComponent<Enemy>().maxHealth = 100;
+        //SwipeTrail swipeTrail = Instantiate(SwipeManager).GetComponent<SwipeTrail>();
+        //swipeTrail.enemy = enemy.GetComponent<Enemy>();
     }
-
-    //public void UpdateGold()
-    //{
-    //    goldDisplay.text = "Gold: " + player.currentGold;
-    //}
 
     public void SpawnEnemyInXSeconds(float x)
     {
@@ -42,18 +38,18 @@ public class FightManager : MonoBehaviour {
     {
         GameObject enemy;
         if (GameManager.instance.bossType == "RedKnight")
-        { 
-            enemy = Instantiate(RedKnight, transform);
+        {
+            enemy = Instantiate(RedKnight, new Vector3(.7f, .8f, 1), Quaternion.identity);
             enemy.GetComponent<Enemy>().damageDelay = 1.05f;
         }
         else if (GameManager.instance.bossType == "Smail")
         { 
-            enemy = Instantiate(Smail, transform);
+            enemy = Instantiate(Smail, new Vector3(0, 0, 1), Quaternion.identity);
             enemy.GetComponent<Enemy>().damageDelay = 1.0f;
         }
         else // "LianHwa"
         { 
-            enemy = Instantiate(LianHwa, transform);
+            enemy = Instantiate(LianHwa, new Vector3(0, 0, 1), Quaternion.identity);
             enemy.GetComponent<Enemy>().damageDelay = .85f;
         }
 
@@ -62,5 +58,12 @@ public class FightManager : MonoBehaviour {
         enemy.GetComponent<Enemy>().enemyHealth = enemyHealth;
         enemy.GetComponent<Enemy>().EnemyHealthText = EnemyHealthText;
         enemy.GetComponent<Enemy>().maxHealth = GameManager.instance.bossHealth;
+
+        // Create SwipeTrail
+        if (!GameManager.instance.selectedMaceNotSword)
+        { 
+            SwipeTrail swipeTrail = Instantiate(SwipeManager).GetComponent<SwipeTrail>();
+            swipeTrail.enemy = enemy.GetComponent<Enemy>();
+        }
     }
 }

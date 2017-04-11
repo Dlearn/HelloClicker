@@ -16,19 +16,17 @@ public class PrepManager : MonoBehaviour {
     public Sprite readyButtonSprite;
     public Sprite unreadyButtonSprite;
 
-    private bool is_ready;
-    private bool selectedMaceNotSword;
+    private bool isReady;
 
 	void Start () {
-        is_ready = false;
-        selectedMaceNotSword = true;
+        isReady = false;
+        GameManager.instance.selectedMaceNotSword = true;
     }
 	
     public void Ready()
     {
-        
-        is_ready = !is_ready;
-        if (is_ready)
+        isReady = !isReady;
+        if (isReady)
         {
             readyButton.image.overrideSprite = unreadyButtonSprite;
         } else
@@ -37,17 +35,15 @@ public class PrepManager : MonoBehaviour {
         }
 
         JSONObject data = new JSONObject(JSONObject.Type.BOOL);
-        data.b = is_ready;
+        data.b = isReady;
         GameManager.socket.Emit("is ready", data);
     }
 
     public void SelectMace()
     {
-        print("1");
-        if (!selectedMaceNotSword)
+        if (!isReady && !GameManager.instance.selectedMaceNotSword)
         {
-            print("2");
-            selectedMaceNotSword = true;
+            GameManager.instance.selectedMaceNotSword = true;
             maceButton.image.overrideSprite = selectedButton;
             swordButton.image.overrideSprite = unselectedButton;
         }
@@ -55,11 +51,9 @@ public class PrepManager : MonoBehaviour {
 
     public void SelectSword()
     {
-        print("a");
-        if (selectedMaceNotSword)
+        if (!isReady && GameManager.instance.selectedMaceNotSword)
         {
-            print("b");
-            selectedMaceNotSword = false;
+            GameManager.instance.selectedMaceNotSword = false;
             maceButton.image.overrideSprite = unselectedButton;
             swordButton.image.overrideSprite = selectedButton;
         }

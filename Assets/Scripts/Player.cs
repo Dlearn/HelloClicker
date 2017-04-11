@@ -17,18 +17,6 @@ public class Player : MonoBehaviour {
     public int _maxHealth = 100;
     public int currentHealth = 100;
     public int attackPerClick;
-    public int currentGold = 0;
-
-    // Other Scripts
-    public Enemy enemy;
-
-    // Sound
-    private AudioSource _audioSouce;
-    public AudioClip hitSound0;
-    public AudioClip hitSound1;
-    public AudioClip blockSound;
-    private float volLowRange = 0.5f;
-    private float volHighRange = 1.0f;
 
     // Health
     private bool damaged = false;
@@ -42,22 +30,16 @@ public class Player : MonoBehaviour {
         isAlive = true;
         // Initialize from player stats
         attackPerClick = 1;
-        currentGold = 0;
         damaged = false;
 
         announcementPanel = GameObject.Find("AnnouncementPanel");
-    }
-
-    private void Awake()
-    {
-        _audioSouce = GetComponent<AudioSource>();
     }
 
     public void GetHitXDamage(int damage)
     {
         if (Input.touchCount == 2)
         {
-            _audioSouce.PlayOneShot(blockSound, 1f);
+            SoundManager.instance.Block();
         } else
         {
             damaged = true;
@@ -66,16 +48,17 @@ public class Player : MonoBehaviour {
             playerHealth.value = currentHealth;
             PlayerHealthText.text = currentHealth + " / " + _maxHealth;
 
-            int randSoundClip = Random.Range(0, 2);
-            float volScale = Random.Range(volLowRange, volHighRange);
-            switch (randSoundClip)
+            if (GameManager.instance.bossType == "RedKnight")
             {
-                case 0:
-                    _audioSouce.PlayOneShot(hitSound0, volScale);
-                    break;
-                case 1:
-                    _audioSouce.PlayOneShot(hitSound1, volScale);
-                    break;
+                SoundManager.instance.RedKnightAttack();
+            }
+            else if (GameManager.instance.bossType == "Smail")
+            {
+                SoundManager.instance.SmailAttack();
+            }
+            else // "LianHwa"
+            {
+                SoundManager.instance.LianHwaAttack();
             }
 
             if (currentHealth <= 0)
@@ -102,6 +85,8 @@ public class Player : MonoBehaviour {
         CancelInvoke();
         announcementPanel.GetComponent<Image>().color = new Color(1, 1, 1, 210.0f / 225f);
         announcementPanel.GetComponentInChildren<Text>().text = "Game Over";
+
+        SoundManager.instance.PlayLoseMusic();
 
         // Change scene in 3 seconds
         Invoke("LoadSoloScene", 3);
